@@ -1,0 +1,357 @@
+/* =========================
+   BODY
+========================= */
+
+body{
+    margin:0;
+    padding:0;
+    font-family:'Poppins',sans-serif;
+
+    background-image:url("../images/backgrounds/login_bg.png");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.signup-container{
+
+    width:90%;
+    max-width:400px;
+
+    background:rgba(255,255,255,0.95);
+
+    border-radius:35px;
+
+    padding:30px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+
+    backdrop-filter:blur(8px);
+
+}
+
+/* =========================
+   TITLE
+========================= */
+
+.signup-container h1{
+
+    text-align:center;
+
+    color:#5C7A5C;
+
+    font-size:38px;
+
+    margin-bottom:5px;
+
+}
+
+.signup-container p{
+
+    text-align:center;
+
+    color:#666;
+
+    margin-bottom:25px;
+
+}
+
+/* =========================
+   FORM
+========================= */
+
+form{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+input{
+
+    width:100%;
+
+    padding:15px;
+
+    margin-bottom:15px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#EEF2EA;
+
+    outline:none;
+
+    font-size:16px;
+
+    box-sizing:border-box;
+
+}
+
+/* =========================
+   SHOW PASSWORD
+========================= */
+
+.show-password{
+
+    width:100%;
+
+    padding:14px;
+
+    margin-bottom:20px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#F5F5F5;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+.show-password:hover{
+
+    background:#ECECEC;
+
+}
+
+/* =========================
+   AVATAR TITLE
+========================= */
+
+.avatar-title{
+
+    text-align:center;
+
+    color:#56755D;
+
+    margin-bottom:15px;
+
+}
+
+/* =========================
+   AVATAR SLIDER
+========================= */
+
+.avatar-slider{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    margin-bottom:25px;
+
+}
+
+/* =========================
+   AVATAR CONTAINER
+========================= */
+
+.avatar-container{
+
+    width:220px;
+
+    display:flex;
+
+    gap:15px;
+
+    overflow-x:auto;
+
+    scroll-behavior:smooth;
+
+    scrollbar-width:none;
+
+}
+
+.avatar-container::-webkit-scrollbar{
+
+    display:none;
+
+}
+
+/* =========================
+   AVATAR
+========================= */
+
+.avatar{
+
+    width:70px;
+
+    height:70px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    flex-shrink:0;
+
+    cursor:pointer;
+
+    border:3px solid transparent;
+
+    transition:.3s;
+
+}
+
+.avatar:hover{
+
+    transform:scale(1.08);
+
+    border-color:#7BA36D;
+
+}
+
+/* =========================
+   ARROWS
+========================= */
+
+.arrow-btn{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#7BA36D;
+
+    color:white;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.arrow-btn:hover{
+
+    background:#5E8755;
+
+}
+
+/* =========================
+   SIGNUP BUTTON
+========================= */
+
+.signup-btn{
+
+    width:100%;
+
+    padding:15px;
+
+    margin-top:10px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#7BA36D;
+
+    color:white;
+
+    font-size:20px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.signup-btn:hover{
+
+    background:#628D58;
+
+}
+
+/* =========================
+   LOGIN LINK
+========================= */
+
+.login-link{
+
+    text-align:center;
+
+    margin-top:20px;
+
+}
+
+.login-link a{
+
+    color:#7BA36D;
+
+    text-decoration:none;
+
+    font-weight:bold;
+
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:450px){
+
+    body{
+
+        padding:20px 10px;
+
+        align-items:flex-start;
+
+    }
+
+    .signup-container{
+
+        width:100%;
+
+        max-width:100%;
+
+        border-radius:25px;
+
+        padding:25px;
+
+    }
+
+    .signup-container h1{
+
+        font-size:32px;
+
+    }
+
+    .avatar-container{
+
+        width:180px;
+
+    }
+
+}

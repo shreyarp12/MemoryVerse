@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/journal.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="journal-page">
+
+    <!-- Header -->
+
+    <div class="journal-header">
+
+        <div>
+
+            <h1>📔 My Journal</h1>
+
+            <p>Capture Today, Treasure Tomorrow</p>
+
+        </div>
+
+        <a href="/home" class="home-btn">
+            🏠
+        </a>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="search-section">
+
+        <input
+            type="text"
+            placeholder="🔍 Search your journal..."
+            class="search-box"
+        >
+
+    </div>
+
+    <!-- Writing Streak -->
+
+    <div class="summary-card">
+
+        <div>
+
+            <h3>12 Days</h3>
+
+            <p>Writing Streak 🔥</p>
+
+        </div>
+
+        <div class="summary-icon">
+
+            📖
+
+        </div>
+
+    </div>
+
+    <!-- Empty State -->
+
+    {% if journals|length == 0 %}
+
+    <div class="empty-box">
+
+        <h2>📔</h2>
+
+        <h3>No Journals Yet</h3>
+
+        <p>Start writing your first memory.</p>
+
+    </div>
+
+    {% endif %}
+
+    <!-- Journal List -->
+
+    {% for journal in journals %}
+
+    <a href="{{ url_for('journal_details', journal_id=journal['id']) }}" class="journal-card">
+
+        <div class="top-row">
+
+            <h3>{{ journal["title"] }}</h3>
+
+            <span class="date-box">
+                {{ journal["created_at"][:10] }}
+            </span>
+
+        </div>
+
+        <div class="journal-content">
+
+            <p>
+
+                {{ journal["content"][:120] }}
+
+                {% if journal["content"]|length > 120 %}
+                    ...
+                {% endif %}
+
+            </p>
+
+        </div>
+
+        <div class="journal-status">
+
+            {% if journal["favorite"] == 1 %}
+                <span>⭐ Favourite</span>
+            {% endif %}
+
+            {% if journal["locked"] == 1 %}
+                <span>🔒 Locked</span>
+            {% endif %}
+
+        </div>
+
+    </a>
+
+    {% endfor %}
+
+    <!-- Floating Add Button -->
+
+    <a href="/create-journal" class="add-btn">
+
+        Add Journal
+
+    </a>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/journal.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="home-page">
+
+    <!-- Header -->
+
+    <div class="header">
+
+        <div>
+
+            <h1>Hello Shreya 🌸</h1>
+
+            <p id="greeting">Good Evening</p>
+
+        </div>
+
+        <a href="/profile">
+
+            <img src="{{ url_for('static', filename='images/avatars/avatar1.png') }}" class="profile-pic">
+
+        </a>
+
+    </div>
+
+    <!-- Feature Cards -->
+
+    <div class="cards">
+
+        <a href="/journal" class="card">
+
+            <img src="{{ url_for('static', filename='images/home/journal.png') }}" class="card-image">
+
+            <h3>Journal</h3>
+
+        </a>
+
+        <a href="/time-capsule" class="card">
+
+            <img src="{{ url_for('static', filename='images/home/capsule.png') }}" class="card-image">
+
+            <h3>Time Capsule</h3>
+
+        </a>
+
+        <a href="/scrapbook" class="card">
+
+            <img src="{{ url_for('static', filename='images/home/scrapbook.png') }}" class="card-image">
+
+            <h3>Scrapbook</h3>
+
+        </a>
+
+        <a href="/mood-tracker" class="card">
+
+            <img src="{{ url_for('static', filename='images/home/mood.png') }}" class="card-image">
+
+            <h3>Mood Tracker</h3>
+
+        </a>
+
+    </div>
+
+    <!-- Writing Streak -->
+
+    <div class="streak">
+
+        <h2>🔥 Writing Streak</h2>
+
+        <h1>12 Days</h1>
+
+    </div>
+
+    <!-- Daily Quote -->
+
+    <div class="quote">
+
+        <h2>🌸 Daily Motivation</h2>
+
+        <p id="quoteText"></p>
+
+    </div>
+
+    <!-- Recent Entries -->
+
+    <div class="recent">
+
+        <h2>Recent Entries</h2>
+
+        <div class="entry">
+
+            <div>
+
+                😊 Great Day at College
+
+                <br>
+
+                <small>12 Aug 2026</small>
+
+            </div>
+
+        </div>
+
+        <div class="entry">
+
+            <div>
+
+                🥰 Birthday Celebration
+
+                <br>
+
+                <small>15 Aug 2026</small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+
+    <div class="bottom-nav">
+
+        <a href="/home">🏠</a>
+
+        <a href="/journal">📔</a>
+
+        <a href="/scrapbook">🎨</a>
+
+        <a href="/profile">👤</a>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

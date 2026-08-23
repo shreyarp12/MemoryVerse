@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/create_scrapbook.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="create-page">
+
+    <!-- Header -->
+    <div class="top-bar">
+
+        <a href="/scrapbook" class="back-btn">
+            ←
+        </a>
+
+        <h2>Create Scrapbook</h2>
+
+        <div></div>
+
+    </div>
+
+    <!-- Form -->
+    <form
+    method="POST"
+    enctype="multipart/form-data">
+
+        <!-- Title -->
+
+        <div class="card">
+
+            <label>Scrapbook Title</label>
+
+            <input
+            type="text"
+            name="title"
+            placeholder="My Beautiful Memories"
+            required>
+
+        </div>
+
+        <!-- Cover -->
+
+        <div class="card">
+
+            <label>Cover Photo</label>
+
+            <input
+            type="file"
+            name="cover"
+            accept="image/*">
+
+        </div>
+
+        <!-- Background -->
+
+        <div class="card">
+
+            <label>Select Background</label>
+
+            <div class="background-grid">
+
+                {% for i in range(1,22) %}
+
+                <img
+
+                src="{{ url_for('static',
+                filename='images/scrapbook/backgrounds/background' ~ i ~ '.jpg') }}"
+
+                class="bg-thumb"
+
+                onclick="selectBackground(this)">
+
+                {% endfor %}
+
+            </div>
+
+            <input
+            type="hidden"
+            id="backgroundInput"
+            name="background">
+
+        </div>
+
+        <button
+        type="submit"
+        class="create-btn">
+
+            💚 Create Scrapbook
+
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static',
+filename='js/create_scrapbook.js') }}"></script>
+{% endblock %}

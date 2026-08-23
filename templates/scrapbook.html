@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/scrapbook.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="scrapbook-page">
+
+    <!-- Header -->
+
+    <div class="top-bar">
+
+        <div>
+
+            <h1>📖 My Scrapbooks</h1>
+
+            <p>Collect your beautiful memories</p>
+
+        </div>
+
+        <a href="/home" class="home-btn">
+
+            🏠
+
+        </a>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="search-box">
+
+        <input
+        type="text"
+        placeholder="🔍 Search scrapbook...">
+
+    </div>
+
+    <!-- Summary -->
+
+    <div class="summary-card">
+
+        <div>
+
+            <h2>12</h2>
+
+            <p>Total Scrapbooks</p>
+
+        </div>
+
+        <div class="summary-icon">
+
+            📚
+
+        </div>
+
+    </div>
+
+    <!-- Scrapbook Cards -->
+
+  <!-- Scrapbook Cards -->
+
+<div class="scrapbook-list">
+
+{% if scrapbooks %}
+
+    {% for book in scrapbooks %}
+
+    <div class="scrapbook-card">
+
+        <div class="cover">
+
+            {% if book.cover %}
+
+            <img
+            src="{{ url_for('static',
+            filename='uploads/scrapbook/' ~ book.cover) }}"
+            alt="Cover">
+
+            {% else %}
+
+            <img
+            src="{{ url_for('static',
+            filename='images/default_cover.jpg') }}"
+            alt="Cover">
+
+            {% endif %}
+
+        </div>
+
+        <div class="card-info">
+
+            <h3>{{ book.title }}</h3>
+
+            <small>
+
+                {{ book.created_at }}
+
+            </small>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+<div class="empty-box">
+
+    <h3>No Scrapbooks Yet 📖</h3>
+
+    <p>Create your first scrapbook.</p>
+
+</div>
+
+{% endif %}
+
+</div>
+
+    <!-- Floating Button -->
+
+    <a href="/create-scrapbook" class="add-btn">
+
+        ➕ New Scrapbook
+
+    </a>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/scrapbook.js') }}"></script>
+{% endblock %}

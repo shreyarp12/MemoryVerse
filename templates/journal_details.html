@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/journal_details.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="details-page">
+
+    <!-- Header -->
+
+    <div class="top-bar">
+
+        <a href="/journal" class="back-btn">
+            ←
+        </a>
+
+        <h2>Journal Details</h2>
+
+        <div style="width:40px;"></div>
+
+    </div>
+
+    <!-- Cover Image -->
+
+    <div class="cover-card">
+
+        {% if journal["photo"] %}
+
+        <img
+            src="{{ url_for('static', filename='uploads/journals/' + journal['photo']) }}"
+            class="cover-image"
+        >
+
+        {% else %}
+
+        <img
+            src="{{ url_for('static', filename='images/journals/default.jpg') }}"
+            class="cover-image"
+        >
+
+        {% endif %}
+
+    </div>
+
+    <!-- Journal Card -->
+
+    <div class="journal-card">
+
+        <h1>
+
+            {{ journal["title"] }}
+
+        </h1>
+
+        <p class="date">
+
+            📅 {{ journal["created_at"][:10] }}
+
+        </p>
+
+        <!-- Badges -->
+
+        <div class="badges">
+
+            {% if journal["favorite"] == 1 %}
+
+            <span class="badge favorite">
+
+                ⭐ Favourite
+
+            </span>
+
+            {% endif %}
+
+            {% if journal["locked"] == 1 %}
+
+            <span class="badge locked">
+
+                🔒 Locked
+
+            </span>
+
+            {% endif %}
+
+        </div>
+
+        <!-- Content -->
+
+        <div class="content-box">
+
+            {{ journal["content"] }}
+
+        </div>
+
+    </div>
+
+    <!-- Stickers -->
+
+    <div class="sticker-card">
+
+        <h3>
+
+            🧸 My Stickers
+
+        </h3>
+
+        <div class="sticker-list">
+
+            <img src="{{ url_for('static', filename='stickers/animals/bunny.png') }}">
+
+            <img src="{{ url_for('static', filename='stickers/flowers/rose.png') }}">
+
+            <img src="{{ url_for('static', filename='stickers/aesthetic/star.png') }}">
+
+            <img src="{{ url_for('static', filename='stickers/aesthetic/cloud.png') }}">
+
+            <img src="{{ url_for('static', filename='stickers/study/book.png') }}">
+
+            <img src="{{ url_for('static', filename='stickers/food/cake.png') }}">
+
+        </div>
+
+    </div>
+
+    <!-- Buttons -->
+
+    <div class="button-group">
+
+        <a
+            href="/edit-journal"
+            class="edit-btn"
+        >
+
+            ✏️ Edit Journal
+
+        </a>
+
+        <a
+            href="#"
+            class="delete-btn"
+        >
+
+            🗑 Delete Journal
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/journal_details.js') }}"></script>
+{% endblock %}

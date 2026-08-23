@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="signup-container">
+
+    <h1>Create Account 🌸</h1>
+    <p>Start your MemoryVerse Journey</p>
+
+    <form action="/signup" method="POST">
+
+        <input type="text" name="fullname" placeholder="Full Name" required>
+
+        <input type="email" name="email" placeholder="Email Address" required>
+
+        <input type="password" id="password" name="password" placeholder="Password" required>
+
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+
+        <button type="button" class="show-password" onclick="togglePassword()">
+            👁 Show Password
+        </button>
+
+        <h3 class="avatar-title">Choose Your Avatar</h3>
+
+        <div class="avatar-slider">
+
+            <button type="button" class="arrow-btn" onclick="scrollLeftAvatar()">◀</button>
+
+            <div class="avatar-container" id="avatarContainer">
+
+                <img src="{{ url_for('static', filename='images/avatars/avatar1.png') }}" class="avatar">
+
+                <img src="{{ url_for('static', filename='images/avatars/avatar2.png') }}" class="avatar">
+
+                <img src="{{ url_for('static', filename='images/avatars/avatar3.png') }}" class="avatar">
+
+                <img src="{{ url_for('static', filename='images/avatars/avatar4.png') }}" class="avatar">
+
+                <img src="{{ url_for('static', filename='images/avatars/avatar5.png') }}" class="avatar">
+
+                <img src="{{ url_for('static', filename='images/avatars/avatar6.png') }}" class="avatar">
+
+            </div>
+
+            <button type="button" class="arrow-btn" onclick="scrollRightAvatar()">▶</button>
+
+        </div>
+
+        <button type="submit" class="signup-btn">
+            Create Account
+        </button>
+
+    </form>
+
+    <p class="login-link">
+        Already have an account?
+        <a href="/login">Login</a>
+    </p>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/signup.js') }}"></script>
+{% endblock %}
