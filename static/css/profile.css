@@ -1,0 +1,12 @@
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.profile-stat-box {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  text-align: center;
+}

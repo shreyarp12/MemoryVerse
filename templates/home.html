@@ -1,145 +1,96 @@
 {% extends "base.html" %}
 
-{% block css %}
+{% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 {% endblock %}
 
 {% block content %}
-
-<div class="home-page">
-
-    <!-- Header -->
-
-    <div class="header">
-
-        <div>
-
-            <h1>Hello Shreya 🌸</h1>
-
-            <p id="greeting">Good Evening</p>
-
-        </div>
-
-        <a href="/profile">
-
-            <img src="{{ url_for('static', filename='images/avatars/avatar1.png') }}" class="profile-pic">
-
-        </a>
-
-    </div>
-
-    <!-- Feature Cards -->
-
-    <div class="cards">
-
-        <a href="/journal" class="card">
-
-            <img src="{{ url_for('static', filename='images/home/journal.png') }}" class="card-image">
-
-            <h3>Journal</h3>
-
-        </a>
-
-        <a href="/time-capsule" class="card">
-
-            <img src="{{ url_for('static', filename='images/home/capsule.png') }}" class="card-image">
-
-            <h3>Time Capsule</h3>
-
-        </a>
-
-        <a href="/scrapbook" class="card">
-
-            <img src="{{ url_for('static', filename='images/home/scrapbook.png') }}" class="card-image">
-
-            <h3>Scrapbook</h3>
-
-        </a>
-
-        <a href="/mood-tracker" class="card">
-
-            <img src="{{ url_for('static', filename='images/home/mood.png') }}" class="card-image">
-
-            <h3>Mood Tracker</h3>
-
-        </a>
-
-    </div>
-
-    <!-- Writing Streak -->
-
-    <div class="streak">
-
-        <h2>🔥 Writing Streak</h2>
-
-        <h1>12 Days</h1>
-
-    </div>
-
-    <!-- Daily Quote -->
-
-    <div class="quote">
-
-        <h2>🌸 Daily Motivation</h2>
-
-        <p id="quoteText"></p>
-
-    </div>
-
-    <!-- Recent Entries -->
-
-    <div class="recent">
-
-        <h2>Recent Entries</h2>
-
-        <div class="entry">
-
-            <div>
-
-                😊 Great Day at College
-
-                <br>
-
-                <small>12 Aug 2026</small>
-
-            </div>
-
-        </div>
-
-        <div class="entry">
-
-            <div>
-
-                🥰 Birthday Celebration
-
-                <br>
-
-                <small>15 Aug 2026</small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Bottom Navigation -->
-
-    <div class="bottom-nav">
-
-        <a href="/home">🏠</a>
-
-        <a href="/journal">📔</a>
-
-        <a href="/scrapbook">🎨</a>
-
-        <a href="/profile">👤</a>
-
-    </div>
-
+<div class="greeting-banner">
+  <div style="font-size: 2rem;">🌸 ✨</div>
+  <h1 style="font-size: 1.8rem; font-weight: 800; color: #D63384;">{{ greeting }}, {{ user.full_name }}!</h1>
+  <p style="color: var(--text-primary); font-weight: 500;">Capture today's little moments before they drift away ☁️</p>
 </div>
 
-{% endblock %}
+<!-- Stats Strip -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-val">🔥 {{ stats.streak }}</div>
+    <div class="stat-lbl">Day Streak</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val">📔 {{ stats.total_journals }}</div>
+    <div class="stat-lbl">Journals</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val">🎨 {{ stats.total_scrapbooks }}</div>
+    <div class="stat-lbl">Scrapbooks</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-val">⏳ {{ stats.total_capsules }}</div>
+    <div class="stat-lbl">Capsules</div>
+  </div>
+</div>
 
-{% block js %}
-<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+<!-- Hub Actions -->
+<div class="action-grid">
+  <a href="{{ url_for('create_journal_route') }}" class="action-card">
+    <span class="action-icon">📔</span>
+    <div>
+      <h3 style="font-size: 1.1rem; font-weight: 700;">New Entry</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">Write today's diary</p>
+    </div>
+  </a>
+
+  <a href="{{ url_for('scrapbook_list') }}" class="action-card">
+    <span class="action-icon">🎨</span>
+    <div>
+      <h3 style="font-size: 1.1rem; font-weight: 700;">Scrapbook</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">Create aesthetic canvas</p>
+    </div>
+  </a>
+
+  <a href="{{ url_for('create_capsule_route') }}" class="action-card">
+    <span class="action-icon">⏳</span>
+    <div>
+      <h3 style="font-size: 1.1rem; font-weight: 700;">Time Capsule</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">Send to future self</p>
+    </div>
+  </a>
+
+  <a href="{{ url_for('mood_tracker') }}" class="action-card">
+    <span class="action-icon">😊</span>
+    <div>
+      <h3 style="font-size: 1.1rem; font-weight: 700;">Log Mood</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">Track daily vibe</p>
+    </div>
+  </a>
+</div>
+
+{% if past_memory %}
+<div class="past-card">
+  <div style="font-weight: 800; color: #A88714; font-size: 1.1rem; margin-bottom: 6px;">✨ Memory From The Past</div>
+  <p style="font-size: 0.9rem; margin-bottom: 10px;">On this date in previous years:</p>
+  <h4 style="font-weight: 700; font-size: 1.1rem;">{{ past_memory.title }}</h4>
+  <p style="font-size: 0.9rem; color: var(--text-primary); margin: 6px 0;">"{{ past_memory.content[:120] }}..."</p>
+  <a href="{{ url_for('view_journal', journal_id=past_memory.id) }}" style="color: #D63384; font-weight: 700; font-size: 0.85rem;">Read full memory 💌</a>
+</div>
+{% endif %}
+
+<h2 class="section-title">📔 Recent Memories</h2>
+<div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px;">
+  {% if recent_journals %}
+    {% for j in recent_journals %}
+      <div class="card" style="padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span style="font-size: 1.2rem;">{{ j.mood }}</span>
+          <a href="{{ url_for('view_journal', journal_id=j.id) }}" style="font-weight: 700; margin-left: 8px; font-size: 1rem;">{{ j.title }}</a>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">{{ j.created_at[:10] }}</p>
+        </div>
+        <a href="{{ url_for('view_journal', journal_id=j.id) }}" class="btn btn-pink" style="padding: 6px 12px; font-size: 0.8rem;">Open 🌸</a>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p style="color: var(--text-muted); font-size: 0.9rem;">No journals yet! Write your first diary today 💖</p>
+  {% endif %}
+</div>
 {% endblock %}

@@ -1,892 +1,859 @@
-/* ==========================================================
-      MemoryVerse Scrapbook Editor
-      FINAL VERSION
-========================================================== */
-
-/* ==========================================================
-      Elements
-========================================================== */
-
-const canvas=document.getElementById("canvas");
-
-const panel=document.getElementById("bottomPanel");
-
-const assetContainer=document.getElementById("assetContainer");
-
-const panelTitle=document.getElementById("panelTitle");
-
-const photoPicker=document.getElementById("photoPicker");
-
-const saveButton=document.getElementById("saveScrapbook");
-
-/* ==========================================================
-      Variables
-========================================================== */
-
-let selectedBox=null;
-
-let highestZ=10;
-
-/* ==========================================================
-      Panel
-========================================================== */
-
-function openPanel(name){
-
-    panel.classList.add("active");
-
-    panelTitle.innerHTML=name;
-
-    assetContainer.innerHTML="";
-
-}
-
-function closePanel(){
-
-    panel.classList.remove("active");
-
-}
-
-/* ==========================================================
-      Placeholder
-========================================================== */
-
-function removePlaceholder(){
-
-    const p=document.querySelector(".canvas-placeholder");
-
-    if(p){
-
-        p.remove();
-
-    }
-
-}
-
-/* ==========================================================
-      Backgrounds
-========================================================== */
-
-function openBackgrounds(){
-
-    openPanel("Choose Background");
-
-    for(let i=1;i<=21;i++){
-
-        let img=document.createElement("img");
-
-        img.src=
-"/static/images/scrapbook/backgrounds/background"+i+".jpg";
-
-        img.className="asset-item";
-
-        img.onclick=function(){
-
-            document.querySelectorAll(".asset-item")
-            .forEach(x=>x.classList.remove("selected"));
-
-            img.classList.add("selected");
-
-            applyBackground(img.src);
-
-        }
-
-        assetContainer.appendChild(img);
-
-    }
-
-}
-
-function applyBackground(src){
-
-    canvas.style.backgroundImage="url('"+src+"')";
-
-    canvas.style.backgroundSize="cover";
-
-    canvas.style.backgroundPosition="center";
-
-}
-
-/* ==========================================================
-      Photos
-========================================================== */
-
-function openPhotos(){
-
-    photoPicker.click();
-
-}
-
-function uploadPhoto(e){
-
-    const file=e.target.files[0];
-
-    if(!file) return;
-
-    let reader=new FileReader();
-
-    reader.onload=function(ev){
-
-        addPhoto(ev.target.result);
-
-    }
-
-    reader.readAsDataURL(file);
-
-}
-
-/* ==========================================================
-      Create Box
-========================================================== */
-
-function createBox(){
-
-    removePlaceholder();
-
-    let box=document.createElement("div");
-
-    box.className="canvas-box";
-
-    box.style.width="180px";
-
-    box.style.height="180px";
-
-    box.style.left="80px";
-
-    box.style.top="120px";
-
-    box.style.zIndex=highestZ++;
-
-    box.onclick=function(e){
-
-        e.stopPropagation();
-
-        selectBox(box);
-
-    }
-
-    canvas.appendChild(box);
-
-    return box;
-
-}
-/* ==========================================================
-      PART 2
-      Stickers + Frames + Papers + Tape + Text
-========================================================== */
-
-/* ==========================================================
-      Stickers
-========================================================== */
-
-function openStickers(){
-
-    openPanel("Choose Sticker");
-
-    assetContainer.innerHTML=`
-
-<button class="category-btn"
-onclick="loadStickerCategory('animals')">🐻 Animals</button>
-
-<button class="category-btn"
-onclick="loadStickerCategory('flowers')">🌸 Flowers</button>
-
-<button class="category-btn"
-onclick="loadStickerCategory('aesthetic')">✨ Aesthetic</button>
-
-<button class="category-btn"
-onclick="loadStickerCategory('food')">🍰 Food</button>
-
-<button class="category-btn"
-onclick="loadStickerCategory('study')">📚 Study</button>
-
-<button class="category-btn"
-onclick="loadStickerCategory('travel')">✈ Travel</button>
-
-<button class="category-btn"
-onclick="loadStickerCategory('emotions')">😊 Emotions</button>
-
-`;
-
-}
-
-/* ==========================================================
-      Sticker Category
-========================================================== */
-
-function loadStickerCategory(category){
-
-    container.innerHTML = "";
-
-    let total = 20;
-    let prefix = category;
-
-    // Animals folder मध्ये animal1.png आहे
-    if(category === "animals"){
-        total = 13;
-        prefix = "animal";
-    }
-
-    // बाकी folders
-    if(category === "flowers") total = 20;
-    if(category === "food") total = 20;
-    if(category === "study") total = 20;
-    if(category === "travel") total = 20;
-    if(category === "emotions") total = 20;
-    if(category === "aesthetic") total = 20;
-
-    for(let i=1; i<=total; i++){
-
-        let img = document.createElement("img");
-
-        img.src = `/static/images/stickers/${category}/${prefix}${i}.png`;
-
-        img.className = "asset-item";
-
-        img.onerror = function(){
-            this.style.display = "none";
-        };
-
-        img.onclick = function(){
-            addSticker(this.src);
-            closePanel();
-        };
-
-        container.appendChild(img);
-    }
-
-}
-
-/* ==========================================================
-      Frames
-========================================================== */
-
-function openFrames(){
-
-    showAssets("Frames","frame",23);
-
-}
-
-/* ==========================================================
-      Papers
-========================================================== */
-
-function openPapers(){
-
-    showAssets("Papers","paper",16);
-
-}
-
-/* ==========================================================
-      Washi Tape
-========================================================== */
-
-function openTapes(){
-
-    showAssets("Washi Tape","tape",20);
-
-}
-
-/* ==========================================================
-      Generic Assets
-========================================================== */
-
-function showAssets(titleText,prefix,total){
-
-    openPanel(titleText);
-
-    for(let i=1;i<=total;i++){
-
-        let img=document.createElement("img");
-
-        img.src=
-`/static/images/scrapbook/${prefix}s/${prefix}${i}.png`;
-
-        img.className="asset-item";
-
-        img.onclick=function(){
-
-            addSticker(img.src);
-
-        }
-
-        assetContainer.appendChild(img);
-
-    }
-
-}
-
-/* ==========================================================
-      Sticker
-========================================================== */
-
-function addSticker(src){
-
-    removePlaceholder();
-
-    let box = createBox();
-
-    let img = document.createElement("img");
-
-    img.src = src;
-
-    img.className = "canvas-sticker";
-
-    box.appendChild(img);
-
-    canvas.appendChild(box);   // ⭐ हे missing होतं
-
-    selectBox(box);
-
-}
-
-/* ==========================================================
-      Photo
-========================================================== */
-
-function addPhoto(src){
-
-    let box=createBox();
-
-    let img=document.createElement("img");
-
-    img.src=src;
-
-    img.className="canvas-photo";
-
-    box.appendChild(img);
-
-    selectBox(box);
-
-}
-
-/* ==========================================================
-      Text
-========================================================== */
-
-function addText(){
-
-    let box=createBox();
-
-    box.style.width="220px";
-
-    box.style.height="80px";
-
-    let txt=document.createElement("textarea");
-
-    txt.placeholder="Write your memory...";
-
-    box.appendChild(txt);
-
-    selectBox(box);
-
-}
-/* ==========================================================
-      PART 3
-      Selection + Drag + Resize + Controls
-========================================================== */
-
-/* ==========================================================
-      Select Box
-========================================================== */
-
-function selectBox(box){
-
-    document.querySelectorAll(".canvas-box").forEach(item=>{
-
-        item.classList.remove("active");
-
-        removeControls(item);
-
+/**
+ * MemoryVerse - Complete Scrapbook Editor Engine
+ */
+
+window.state = {
+  canvas: null,
+  scaler: null,
+  viewport: null,
+  activeItem: null,
+  highestZIndex: 10,
+  scale: 1
+};
+
+window.SCRAPBOOK_ID = 1;
+window.BASE_STATIC_URL = '/static/';
+
+window.STICKER_CATEGORIES = [
+  { id: 'animals', name: '🐰 Animals', json: 'animals.json' },
+  { id: 'emotions', name: '😊 Emotions', json: 'emotions.json' },
+  { id: 'flowers', name: '🌸 Flowers', json: 'flowers.json' },
+  { id: 'aesthetic', name: '✨ Aesthetic', json: 'aesthetic.json' },
+  { id: 'food', name: '🍔 Food', json: 'food.json' },
+  { id: 'travel', name: '✈️ Travel', json: 'travel.json' },
+  { id: 'study', name: '📚 Study', json: 'study.json' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  window.state.canvas = document.getElementById('scrapbookCanvas');
+  window.state.scaler = document.getElementById('canvasScaler');
+  window.state.viewport = document.getElementById('viewport');
+
+  if (window.state.canvas) {
+    window.SCRAPBOOK_ID = parseInt(window.state.canvas.dataset.id, 10) || 1;
+    window.BASE_STATIC_URL = window.state.canvas.dataset.static || '/static/';
+    if (!window.BASE_STATIC_URL.endsWith('/')) window.BASE_STATIC_URL += '/';
+    
+    applyCanvasBackground(window.state.canvas.dataset.bg || '#FFF8CF');
+  }
+
+  updateResponsiveScale();
+  window.addEventListener('resize', updateResponsiveScale);
+
+  const bindClick = (id, fn) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', fn);
+  };
+
+  bindClick('btnBg', () => openPanel('backgrounds'));
+  bindClick('btnPhoto', () => {
+    const pInput = document.getElementById('photoInput');
+    if (pInput) pInput.click();
+  });
+  bindClick('btnStickers', () => openPanel('stickers'));
+  bindClick('btnFrames', () => openPanel('frames'));
+  bindClick('btnPapers', () => openPanel('papers'));
+  bindClick('btnTape', () => openPanel('tape'));
+  bindClick('btnText', () => addText());
+  bindClick('btnCloseDrawer', () => closeDrawer());
+  bindClick('saveBtn', () => saveScrapbook());
+
+  setupTextFormatControls();
+
+  const photoInput = document.getElementById('photoInput');
+  if (photoInput) {
+    photoInput.addEventListener('change', function() {
+      handlePhotoUpload(this);
     });
+  }
 
-    selectedBox=box;
+  // Restore initial items
+  try {
+    const rawData = document.getElementById('initialItemsData');
+    if (rawData && rawData.textContent.trim() !== '') {
+      const initialItems = JSON.parse(rawData.textContent);
+      if (Array.isArray(initialItems)) {
+        initialItems.forEach(item => restoreItem(item));
+      }
+    }
+  } catch (err) {
+    console.error('[MemoryVerse] Error restoring items:', err);
+  }
 
-    box.classList.add("active");
+  if (window.state.canvas) {
+    window.state.canvas.addEventListener('pointerdown', (e) => {
+      if (e.target === window.state.canvas) {
+        deselectAll();
+      }
+    });
+  }
+});
 
-    createControls(box);
+// ----------------- RESPONSIVE SCALER -----------------
 
-    bringToFront(box);
+function updateResponsiveScale() {
+  if (!window.state.viewport || !window.state.scaler) return;
+  const vw = window.state.viewport.clientWidth - 24;
+  const vh = window.state.viewport.clientHeight - 24;
 
+  const canvasW = 800;
+  const canvasH = 600;
+
+  const scaleX = vw / canvasW;
+  const scaleY = vh / canvasH;
+  const targetScale = Math.min(scaleX, scaleY, 1.0);
+
+  window.state.scale = targetScale;
+  window.state.scaler.style.transform = `scale(${targetScale})`;
 }
 
-/* ==========================================================
-      Bring To Front
-========================================================== */
+// ----------------- BACKGROUND -----------------
 
-function bringToFront(box){
-
-    box.style.zIndex=highestZ++;
-
+function applyCanvasBackground(val) {
+  if (!window.state.canvas) return;
+  if (val.startsWith('url(') || val.includes('/') || val.endsWith('.png') || val.endsWith('.jpg')) {
+    const cleanUrl = val.startsWith('url(') ? val : `url("${val}")`;
+    window.state.canvas.style.backgroundImage = cleanUrl;
+    window.state.canvas.style.backgroundSize = 'cover';
+    window.state.canvas.style.backgroundPosition = 'center';
+  } else {
+    window.state.canvas.style.backgroundImage = 'none';
+    window.state.canvas.style.backgroundColor = val;
+  }
 }
 
-/* ==========================================================
-      Controls
-========================================================== */
+// ----------------- SELECTION & HANDLES -----------------
 
-function createControls(box){
-
-    removeControls(box);
-
-    /* Delete */
-
-    let del=document.createElement("button");
-
-    del.className="delete-btn";
-
-    del.innerHTML="🗑";
-
-    del.onclick=function(e){
-
-        e.stopPropagation();
-
-        box.remove();
-
-    };
-
-    box.appendChild(del);
-
-    /* Rotate */
-
-    let rotate=document.createElement("button");
-
-    rotate.className="rotate-btn";
-
-    rotate.innerHTML="↻";
-
-    rotate.onclick=function(e){
-
-        e.stopPropagation();
-
-        let angle=parseInt(box.dataset.rotate||0);
-
-        angle+=15;
-
-        box.dataset.rotate=angle;
-
-        updateTransform(box);
-
-    };
-
-    box.appendChild(rotate);
-
-    /* Flip */
-
-    let flip=document.createElement("button");
-
-    flip.className="flip-btn";
-
-    flip.innerHTML="⇋";
-
-    flip.onclick=function(e){
-
-        e.stopPropagation();
-
-        box.dataset.flip=
-        box.dataset.flip==="yes"?"no":"yes";
-
-        updateTransform(box);
-
-    };
-
-    box.appendChild(flip);
-
-    /* Resize */
-
-    let resize=document.createElement("div");
-
-    resize.className="resize-handle";
-
-    resize.onmousedown=function(e){
-
-        resizeStart(e,box);
-
-    };
-
-    box.appendChild(resize);
-
-    dragStart(box);
-
+function deselectAll() {
+  if (window.state.activeItem) {
+    window.state.activeItem.classList.remove('selected');
+    const handles = window.state.activeItem.querySelectorAll('.item-handle');
+    handles.forEach(h => h.remove());
+    window.state.activeItem = null;
+  }
+  const bar = document.getElementById('textFormatBar');
+  if (bar) bar.classList.remove('active');
 }
 
-/* ==========================================================
-      Remove Controls
-========================================================== */
+function selectItem(el) {
+  if (window.state.activeItem === el) return;
+  deselectAll();
+  window.state.activeItem = el;
+  el.classList.add('selected');
 
-function removeControls(box){
+  window.state.highestZIndex += 1;
+  el.style.zIndex = window.state.highestZIndex;
 
-    box.querySelectorAll(
-        ".delete-btn, .rotate-btn, .flip-btn, .resize-handle"
-    ).forEach(btn=>btn.remove());
+  const resizeH = document.createElement('div');
+  resizeH.className = 'item-handle resize-handle';
+  resizeH.innerHTML = '⤡';
+  attachResizeController(resizeH, el);
+  el.appendChild(resizeH);
 
-}
+  const rotateH = document.createElement('div');
+  rotateH.className = 'item-handle rotate-handle';
+  rotateH.innerHTML = '↻';
+  attachRotateController(rotateH, el);
+  el.appendChild(rotateH);
 
-/* ==========================================================
-      Transform
-========================================================== */
-
-function updateTransform(box){
-
-    let angle=parseInt(box.dataset.rotate||0);
-
-    let flip=(box.dataset.flip==="yes")?-1:1;
-
-    box.style.transform=
-    `scaleX(${flip}) rotate(${angle}deg)`;
-
-}
-
-/* ==========================================================
-      Drag
-========================================================== */
-
-function dragStart(box){
-
-    box.onmousedown=function(e){
-
-        if(
-
-            e.target.classList.contains("resize-handle") ||
-
-            e.target.classList.contains("delete-btn") ||
-
-            e.target.classList.contains("rotate-btn") ||
-
-            e.target.classList.contains("flip-btn")
-
-        ) return;
-
-        let startX=e.clientX;
-
-        let startY=e.clientY;
-
-        let left=box.offsetLeft;
-
-        let top=box.offsetTop;
-
-        document.onmousemove=function(ev){
-
-            box.style.left=
-            left+(ev.clientX-startX)+"px";
-
-            box.style.top=
-            top+(ev.clientY-startY)+"px";
-
-        };
-
-        document.onmouseup=function(){
-
-            document.onmousemove=null;
-
-            document.onmouseup=null;
-
-        };
-
-    };
-
-}
-
-/* ==========================================================
-      Resize
-========================================================== */
-
-function resizeStart(e,box){
-
+  const deleteH = document.createElement('div');
+  deleteH.className = 'item-handle delete-handle';
+  deleteH.innerHTML = '✕';
+  deleteH.addEventListener('pointerdown', (e) => {
     e.stopPropagation();
-
-    let startX=e.clientX;
-
-    let startWidth=box.offsetWidth;
-
-    let startHeight=box.offsetHeight;
-
-    document.onmousemove=function(ev){
-
-        let width=startWidth+(ev.clientX-startX);
-
-        let height=startHeight+(ev.clientX-startX);
-
-        if(width<60) width=60;
-
-        if(height<60) height=60;
-
-        box.style.width=width+"px";
-
-        box.style.height=height+"px";
-
-    };
-
-    document.onmouseup=function(){
-
-        document.onmousemove=null;
-
-        document.onmouseup=null;
-
-    };
-
-}
-
-/* ==========================================================
-      Click Outside
-========================================================== */
-
-document.addEventListener("click",function(e){
-
-    if(!e.target.closest(".canvas-box")){
-
-        document.querySelectorAll(".canvas-box").forEach(item=>{
-
-            item.classList.remove("active");
-
-            removeControls(item);
-
-        });
-
-        selectedBox=null;
-
-    }
-
-});
-/* ==========================================================
-      PART 4
-      Save + Keyboard + Touch + Final Functions
-========================================================== */
-
-/* ==========================================================
-      Save
-========================================================== */
-
-if(saveButton){
-
-    saveButton.onclick=function(){
-
-        alert("💚 Scrapbook Saved Successfully!");
-
-    };
-
-}
-
-/* ==========================================================
-      Delete Key
-========================================================== */
-
-document.addEventListener("keydown",function(e){
-
-    if(e.key==="Delete" && selectedBox){
-
-        selectedBox.remove();
-
-        selectedBox=null;
-
-    }
-
-});
-
-/* ==========================================================
-      ESC Close Panel
-========================================================== */
-
-document.addEventListener("keydown",function(e){
-
-    if(e.key==="Escape"){
-
-        closePanel();
-
-    }
-
-});
-
-/* ==========================================================
-      Touch Support
-========================================================== */
-
-document.querySelectorAll(".toolbar button").forEach(btn=>{
-
-    btn.addEventListener("touchstart",function(){
-
-        this.style.transform="scale(.95)";
-
-    });
-
-    btn.addEventListener("touchend",function(){
-
-        this.style.transform="scale(1)";
-
-    });
-
-});
-
-/* ==========================================================
-      Background Selection Highlight
-========================================================== */
-
-document.addEventListener("click",function(e){
-
-    if(e.target.classList.contains("asset-item")){
-
-        document.querySelectorAll(".asset-item").forEach(item=>{
-
-            item.classList.remove("selected");
-
-        });
-
-        e.target.classList.add("selected");
-
-    }
-
-});
-
-/* ==========================================================
-      Cover Photo Drag
-========================================================== */
-
-const cover=document.getElementById("coverPhoto");
-
-if(cover){
-
-    cover.onmousedown=function(e){
-
-        let startX=e.clientX;
-
-        let startY=e.clientY;
-
-        let left=cover.offsetLeft;
-
-        let top=cover.offsetTop;
-
-        document.onmousemove=function(ev){
-
-            cover.style.position="absolute";
-
-            cover.style.left=
-            left+(ev.clientX-startX)+"px";
-
-            cover.style.top=
-            top+(ev.clientY-startY)+"px";
-
-        };
-
-        document.onmouseup=function(){
-
-            document.onmousemove=null;
-
-            document.onmouseup=null;
-
-        };
-
-    };
-
-}
-
-/* ==========================================================
-      Double Click -> Bring Front
-========================================================== */
-
-canvas.addEventListener("dblclick",function(e){
-
-    let box=e.target.closest(".canvas-box");
-
-    if(box){
-
-        bringToFront(box);
-
-    }
-
-});
-
-/* ==========================================================
-      Close Panel After Adding Item
-========================================================== */
-
-function autoClosePanel(){
-
-    setTimeout(function(){
-
-        closePanel();
-
-    },300);
-
-}
-/* ==========================================================
-      PART 5
-      Final Initialization + Helpers
-========================================================== */
-
-/* ==========================================
-      Auto Close Panel
-========================================== */
-
-function finishAdding(){
-
-    autoClosePanel();
-
-}
-
-/* ==========================================
-      Click Sticker
-========================================== */
-
-document.addEventListener("click",function(e){
-
-    if(e.target.classList.contains("asset-item")){
-
-        finishAdding();
-
-    }
-
-});
-
-/* ==========================================
-      Canvas Click
-========================================== */
-
-canvas.addEventListener("click",function(e){
-
-    if(e.target===canvas){
-
-        selectedBox=null;
-
-        document.querySelectorAll(".canvas-box").forEach(item=>{
-
-            item.classList.remove("active");
-
-            removeControls(item);
-
-        });
-
-    }
-
-});
-
-/* ==========================================
-      Prevent Image Drag
-========================================== */
-
-document.addEventListener("dragstart",function(e){
-
     e.preventDefault();
+    el.remove();
+    deselectAll();
+  });
+  el.appendChild(deleteH);
 
-});
-
-/* ==========================================
-      Save (Demo)
-========================================== */
-
-function saveScrapbook(){
-
-    alert("💚 MemoryVerse Scrapbook Saved Successfully!");
-
+  if (el.dataset.type === 'text') {
+    syncTextFormatBar(el);
+  }
 }
 
-if(saveButton){
+function createBaseItemElement(type, x, y, width, height, rotation, zIndex) {
+  const el = document.createElement('div');
+  el.className = 'canvas-item';
+  el.dataset.type = type;
+  el.style.left = `${x}px`;
+  el.style.top = `${y}px`;
+  el.style.width = `${width}px`;
+  el.style.height = `${height}px`;
 
-    saveButton.onclick=saveScrapbook;
+  const rot = parseFloat(rotation) || 0;
+  el.dataset.rotation = rot;
+  el.style.transform = `rotate(${rot}deg)`;
 
+  const z = parseInt(zIndex, 10) || ++window.state.highestZIndex;
+  el.style.zIndex = z;
+  if (z > window.state.highestZIndex) window.state.highestZIndex = z;
+
+  attachDragController(el);
+  window.state.canvas.appendChild(el);
+  return el;
 }
 
-/* ==========================================
-      Welcome
-========================================== */
+// ----------------- DRAG, RESIZE, ROTATE CONTROLLERS -----------------
 
-console.log("MemoryVerse Scrapbook Editor Loaded Successfully 💚");
+function attachDragController(el) {
+  let isDragging = false;
+  let startX = 0, startY = 0;
+  let initLeft = 0, initTop = 0;
 
+  el.addEventListener('pointerdown', (e) => {
+    if (e.target.classList.contains('item-handle')) return;
+
+    selectItem(el);
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    initLeft = parseFloat(el.style.left) || 0;
+    initTop = parseFloat(el.style.top) || 0;
+    el.setPointerCapture(e.pointerId);
+  });
+
+  el.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const currentScale = window.state.scale || 1.0;
+    const dx = (e.clientX - startX) / currentScale;
+    const dy = (e.clientY - startY) / currentScale;
+
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+      el.style.left = `${initLeft + dx}px`;
+      el.style.top = `${initTop + dy}px`;
+    }
+  });
+
+  const stopDrag = (e) => {
+    if (isDragging) {
+      isDragging = false;
+      try { el.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+  };
+
+  el.addEventListener('pointerup', stopDrag);
+  el.addEventListener('pointercancel', stopDrag);
+}
+
+function attachResizeController(handle, el) {
+  let isResizing = false;
+  let startX = 0;
+  let startW = 0, startH = 0;
+  let aspectRatio = 1;
+
+  handle.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    isResizing = true;
+    startX = e.clientX;
+    startW = parseFloat(el.style.width) || 100;
+    startH = parseFloat(el.style.height) || 100;
+    aspectRatio = startW / startH;
+    handle.setPointerCapture(e.pointerId);
+  });
+
+  handle.addEventListener('pointermove', (e) => {
+    if (!isResizing) return;
+    e.preventDefault();
+    const currentScale = window.state.scale || 1.0;
+    const dx = (e.clientX - startX) / currentScale;
+    let newWidth = startW + dx;
+
+    newWidth = Math.max(40, Math.min(500, newWidth));
+    const newHeight = newWidth / aspectRatio;
+
+    el.style.width = `${newWidth}px`;
+    el.style.height = `${newHeight}px`;
+
+    const txt = el.querySelector('.canvas-text');
+    if (txt) {
+      const calcFont = Math.max(14, Math.round(newWidth * 0.12));
+      txt.style.fontSize = `${calcFont}px`;
+      const sizeInput = document.getElementById('fontSizeInput');
+      if (sizeInput) sizeInput.value = calcFont;
+    }
+  });
+
+  const stopResize = (e) => {
+    if (isResizing) {
+      isResizing = false;
+      try { handle.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+  };
+
+  handle.addEventListener('pointerup', stopResize);
+  handle.addEventListener('pointercancel', stopResize);
+}
+
+function attachRotateController(handle, el) {
+  let isRotating = false;
+  let centerX = 0, centerY = 0;
+
+  handle.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    isRotating = true;
+
+    const rect = el.getBoundingClientRect();
+    centerX = rect.left + rect.width / 2;
+    centerY = rect.top + rect.height / 2;
+    handle.setPointerCapture(e.pointerId);
+  });
+
+  handle.addEventListener('pointermove', (e) => {
+    if (!isRotating) return;
+    e.preventDefault();
+    const radians = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+    let degrees = radians * (180 / Math.PI) + 135;
+    degrees = (degrees + 360) % 360;
+
+    el.dataset.rotation = degrees.toFixed(1);
+    el.style.transform = `rotate(${degrees}deg)`;
+  });
+
+  const stopRotate = (e) => {
+    if (isRotating) {
+      isRotating = false;
+      try { handle.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+  };
+
+  handle.addEventListener('pointerup', stopRotate);
+  handle.addEventListener('pointercancel', stopRotate);
+}
+
+// ----------------- TEXT FORMATTING CONTROLS -----------------
+
+function setupTextFormatControls() {
+  const bar = document.getElementById('textFormatBar');
+  if (bar) {
+    bar.addEventListener('pointerdown', (e) => e.stopPropagation());
+    bar.addEventListener('mousedown', (e) => e.stopPropagation());
+  }
+
+  const fontSelect = document.getElementById('fontFamilySelect');
+  if (fontSelect) {
+    fontSelect.addEventListener('change', () => {
+      if (window.state.activeItem && window.state.activeItem.dataset.type === 'text') {
+        const txt = window.state.activeItem.querySelector('.canvas-text');
+        if (txt) txt.style.fontFamily = fontSelect.value;
+      }
+    });
+  }
+
+  const sizeInput = document.getElementById('fontSizeInput');
+  const setFontSize = (size) => {
+    const val = Math.max(10, Math.min(150, parseInt(size, 10) || 22));
+    if (sizeInput) sizeInput.value = val;
+    if (window.state.activeItem && window.state.activeItem.dataset.type === 'text') {
+      const txt = window.state.activeItem.querySelector('.canvas-text');
+      if (txt) {
+        txt.style.fontSize = `${val}px`;
+        txt.style.lineHeight = `${Math.round(val * 1.3)}px`;
+      }
+    }
+  };
+
+  if (sizeInput) {
+    sizeInput.addEventListener('input', () => setFontSize(sizeInput.value));
+  }
+
+  const btnDec = document.getElementById('btnDecreaseSize');
+  if (btnDec) {
+    btnDec.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const cur = parseInt(sizeInput.value, 10) || 22;
+      setFontSize(cur - 2);
+    });
+  }
+
+  const btnInc = document.getElementById('btnIncreaseSize');
+  if (btnInc) {
+    btnInc.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const cur = parseInt(sizeInput.value, 10) || 22;
+      setFontSize(cur + 2);
+    });
+  }
+
+  document.querySelectorAll('.color-dot').forEach(dot => {
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (window.state.activeItem && window.state.activeItem.dataset.type === 'text') {
+        const txt = window.state.activeItem.querySelector('.canvas-text');
+        if (txt) {
+          txt.style.color = dot.dataset.color;
+          document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+          dot.classList.add('selected');
+        }
+      }
+    });
+  });
+
+  const btnBold = document.getElementById('btnBold');
+  if (btnBold) {
+    btnBold.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (window.state.activeItem && window.state.activeItem.dataset.type === 'text') {
+        const txt = window.state.activeItem.querySelector('.canvas-text');
+        if (txt) {
+          const isBold = txt.style.fontWeight === 'bold' || txt.style.fontWeight === '700';
+          txt.style.fontWeight = isBold ? 'normal' : 'bold';
+          btnBold.classList.toggle('active', !isBold);
+        }
+      }
+    });
+  }
+
+  const btnItalic = document.getElementById('btnItalic');
+  if (btnItalic) {
+    btnItalic.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (window.state.activeItem && window.state.activeItem.dataset.type === 'text') {
+        const txt = window.state.activeItem.querySelector('.canvas-text');
+        if (txt) {
+          const isItalic = txt.style.fontStyle === 'italic';
+          txt.style.fontStyle = isItalic ? 'normal' : 'italic';
+          btnItalic.classList.toggle('active', !isItalic);
+        }
+      }
+    });
+  }
+
+  const btnUnderline = document.getElementById('btnUnderline');
+  if (btnUnderline) {
+    btnUnderline.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (window.state.activeItem && window.state.activeItem.dataset.type === 'text') {
+        const txt = window.state.activeItem.querySelector('.canvas-text');
+        if (txt) {
+          const isUnderline = txt.style.textDecoration === 'underline';
+          txt.style.textDecoration = isUnderline ? 'none' : 'underline';
+          btnUnderline.classList.toggle('active', !isUnderline);
+        }
+      }
+    });
+  }
+}
+
+function syncTextFormatBar(el) {
+  const bar = document.getElementById('textFormatBar');
+  if (!bar) return;
+  bar.classList.add('active');
+
+  const txt = el.querySelector('.canvas-text');
+  if (!txt) return;
+
+  const fontSelect = document.getElementById('fontFamilySelect');
+  if (fontSelect && txt.style.fontFamily) {
+    fontSelect.value = txt.style.fontFamily;
+  }
+
+  const sizeInput = document.getElementById('fontSizeInput');
+  if (sizeInput) {
+    const currentSize = parseInt(window.getComputedStyle(txt).fontSize, 10) || 22;
+    sizeInput.value = currentSize;
+  }
+
+  const btnBold = document.getElementById('btnBold');
+  if (btnBold) {
+    const isBold = txt.style.fontWeight === 'bold' || txt.style.fontWeight === '700';
+    btnBold.classList.toggle('active', isBold);
+  }
+
+  const btnItalic = document.getElementById('btnItalic');
+  if (btnItalic) {
+    btnItalic.classList.toggle('active', txt.style.fontStyle === 'italic');
+  }
+
+  const btnUnderline = document.getElementById('btnUnderline');
+  if (btnUnderline) {
+    btnUnderline.classList.toggle('active', txt.style.textDecoration === 'underline');
+  }
+}
+
+// ----------------- ADD & RESTORE TEXT ITEMS -----------------
+
+function addText() {
+  const w = 220;
+  const h = 80;
+  const el = createBaseItemElement('text', 60, 60, w, h, 0, ++window.state.highestZIndex);
+
+  const textDiv = document.createElement('div');
+  textDiv.className = 'canvas-text';
+  textDiv.contentEditable = 'true';
+  textDiv.innerText = 'Write your memory... ✨';
+  textDiv.style.fontSize = '22px';
+  textDiv.style.color = '#37352F';
+
+  el.appendChild(textDiv);
+  selectItem(el);
+  textDiv.focus();
+}
+
+function restoreItem(itemData) {
+  const el = createBaseItemElement(
+    itemData.type,
+    itemData.x,
+    itemData.y,
+    itemData.width,
+    itemData.height,
+    itemData.rotation,
+    itemData.z_index
+  );
+
+  if (['sticker', 'photo', 'frame', 'paper', 'tape'].includes(itemData.type)) {
+    const img = document.createElement('img');
+    img.src = itemData.content;
+    img.onerror = () => el.remove();
+    el.appendChild(img);
+  } else if (itemData.type === 'text') {
+    const textDiv = document.createElement('div');
+    textDiv.className = 'canvas-text';
+    textDiv.contentEditable = 'true';
+    textDiv.innerText = itemData.content || 'Write your memory...';
+
+    if (itemData.extra_data) {
+      try {
+        const extra = typeof itemData.extra_data === 'string' ? JSON.parse(itemData.extra_data) : itemData.extra_data;
+        if (extra.fontFamily) textDiv.style.fontFamily = extra.fontFamily;
+        if (extra.color) textDiv.style.color = extra.color;
+        if (extra.fontWeight) textDiv.style.fontWeight = extra.fontWeight;
+        if (extra.fontStyle) textDiv.style.fontStyle = extra.fontStyle;
+        if (extra.textDecoration) textDiv.style.textDecoration = extra.textDecoration;
+        if (extra.fontSize) textDiv.style.fontSize = extra.fontSize;
+      } catch (_) {}
+    }
+
+    if (!textDiv.style.fontSize) {
+      textDiv.style.fontSize = `${Math.max(14, Math.round(itemData.width * 0.12))}px`;
+    }
+    el.appendChild(textDiv);
+  }
+}
+
+// ----------------- DRAWER & ASSETS -----------------
+
+function openPanel(panelType) {
+  const drawer = document.getElementById('editorDrawer');
+  const title = document.getElementById('drawerTitle');
+  const content = document.getElementById('drawerContent');
+  if (!drawer || !title || !content) return;
+
+  drawer.classList.add('open');
+
+  if (panelType === 'stickers') {
+    title.innerText = 'Choose Sticker 🌸';
+    renderStickerPanel(content);
+  } else if (panelType === 'backgrounds') {
+    title.innerText = 'Choose Background 🖼️';
+    renderBackgroundPanel(content);
+  } else if (panelType === 'tape') {
+    title.innerText = 'Washi Tape 🎀';
+    renderImageAssetsPanel(content, 'tapes', 'tapes.json', 'tape');
+  } else if (panelType === 'papers') {
+    title.innerText = 'Paper Notes 📜';
+    renderImageAssetsPanel(content, 'papers', 'papers.json', 'paper');
+  } else if (panelType === 'frames') {
+    title.innerText = 'Aesthetic Frames 🖼️';
+    renderImageAssetsPanel(content, 'frames', 'frames.json', 'frame');
+  }
+}
+
+function closeDrawer() {
+  const drawer = document.getElementById('editorDrawer');
+  if (drawer) drawer.classList.remove('open');
+}
+
+function renderStickerPanel(container) {
+  container.innerHTML = `
+    <div class="sticker-category-tabs" id="categoryTabs"></div>
+    <div class="sticker-grid" id="stickersGrid"></div>
+  `;
+
+  const tabsContainer = document.getElementById('categoryTabs');
+  window.STICKER_CATEGORIES.forEach((cat, idx) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `category-tab ${idx === 0 ? 'active' : ''}`;
+    btn.innerText = cat.name;
+    btn.onclick = () => {
+      document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      loadCategoryStickers(cat);
+    };
+    tabsContainer.appendChild(btn);
+  });
+
+  loadCategoryStickers(window.STICKER_CATEGORIES[0]);
+}
+
+async function loadCategoryStickers(category) {
+  const grid = document.getElementById('stickersGrid');
+  if (!grid) return;
+  grid.innerHTML = '<p style="color: #787774; font-size: 0.85rem;">Loading stickers...</p>';
+
+  try {
+    let files = [];
+    const apiRes = await fetch(`/api/stickers/${category.id}`);
+    if (apiRes.ok) files = await apiRes.json();
+    
+    if (!files || files.length === 0) {
+      const jsonRes = await fetch(`${window.BASE_STATIC_URL}data/${category.json}?t=${Date.now()}`);
+      if (jsonRes.ok) files = await jsonRes.json();
+    }
+
+    if (!Array.isArray(files) || files.length === 0) {
+      grid.innerHTML = `<p style="color: #787774; font-size: 0.85rem; padding: 12px;">Place PNG files in <code>static/images/stickers/${category.id}/</code></p>`;
+      return;
+    }
+
+    grid.innerHTML = '';
+    files.forEach(filename => {
+      if (!filename || typeof filename !== 'string') return;
+      const stickerUrl = `${window.BASE_STATIC_URL}images/stickers/${category.id}/${encodeURIComponent(filename.trim())}`;
+
+      const card = document.createElement('div');
+      card.className = 'sticker-grid-item';
+
+      const img = document.createElement('img');
+      img.src = stickerUrl;
+      img.alt = filename;
+      img.loading = 'lazy';
+      img.onerror = () => card.remove();
+
+      card.appendChild(img);
+      card.onclick = () => {
+        addMediaToCanvas('sticker', stickerUrl, 100, 100);
+        closeDrawer();
+      };
+
+      grid.appendChild(card);
+    });
+  } catch (err) {
+    grid.innerHTML = `<p style="color: #787774; font-size: 0.85rem; padding: 12px;">Could not load stickers for ${category.name}.</p>`;
+  }
+}
+
+async function renderImageAssetsPanel(container, folderName, jsonName, itemType) {
+  container.innerHTML = '<div class="sticker-grid" id="assetGrid"><p style="color: #787774; font-size: 0.85rem;">Loading assets...</p></div>';
+  const grid = document.getElementById('assetGrid');
+
+  try {
+    let files = [];
+    const apiRes = await fetch(`/api/stickers/${folderName}`);
+    if (apiRes.ok) files = await apiRes.json();
+
+    if (!files || files.length === 0) {
+      const jsonRes = await fetch(`${window.BASE_STATIC_URL}data/${jsonName}?t=${Date.now()}`);
+      if (jsonRes.ok) files = await jsonRes.json();
+    }
+
+    if (!Array.isArray(files) || files.length === 0) {
+      grid.innerHTML = `<p style="color: #787774; font-size: 0.85rem; padding: 12px;">Place files in <code>static/images/stickers/${folderName}/</code></p>`;
+      return;
+    }
+
+    grid.innerHTML = '';
+    files.forEach(filename => {
+      const assetUrl = `${window.BASE_STATIC_URL}images/stickers/${folderName}/${encodeURIComponent(filename.trim())}`;
+      const card = document.createElement('div');
+      card.className = 'sticker-grid-item';
+
+      const img = document.createElement('img');
+      img.src = assetUrl;
+      img.onerror = () => card.remove();
+
+      card.appendChild(img);
+      card.onclick = () => {
+        const defaultWidth = itemType === 'tape' ? 140 : (itemType === 'paper' ? 150 : 160);
+        const defaultHeight = itemType === 'tape' ? 50 : (itemType === 'paper' ? 150 : 160);
+        addMediaToCanvas(itemType, assetUrl, defaultWidth, defaultHeight);
+        closeDrawer();
+      };
+
+      grid.appendChild(card);
+    });
+  } catch (err) {
+    grid.innerHTML = `<p style="color: #787774; font-size: 0.85rem; padding: 12px;">No files found in <code>static/images/stickers/${folderName}/</code></p>`;
+  }
+}
+
+async function renderBackgroundPanel(container) {
+  container.innerHTML = `
+    <div style="margin-bottom: 12px;">
+      <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 8px;">Solid Pastels 🎨</h4>
+      <div id="solidBgContainer" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+    </div>
+    <div>
+      <h4 style="font-size: 0.85rem; font-weight: 700; margin-bottom: 8px;">Image Backgrounds 🖼️</h4>
+      <div id="imageBgGrid" class="sticker-grid"><p style="color: #787774; font-size: 0.8rem;">Loading background images...</p></div>
+    </div>
+  `;
+
+  const solidBgs = [
+    { name: 'Cream 🤍', color: '#F8F6F2' },
+    { name: 'Pink 🌸', color: '#FFE4EC' },
+    { name: 'Sky ☁️', color: '#E5F4FF' },
+    { name: 'Lavender 💜', color: '#EEE6FF' },
+    { name: 'Yellow 💛', color: '#FFF8CF' },
+    { name: 'Mint 🌿', color: '#E2F8E7' }
+  ];
+  const solidContainer = document.getElementById('solidBgContainer');
+  solidBgs.forEach(b => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'tool-btn';
+    btn.style.background = b.color;
+    btn.innerText = b.name;
+    btn.onclick = () => {
+      applyCanvasBackground(b.color);
+      closeDrawer();
+    };
+    solidContainer.appendChild(btn);
+  });
+
+  const imageGrid = document.getElementById('imageBgGrid');
+  try {
+    let bgs = [];
+    const apiRes = await fetch('/api/stickers/backgrounds');
+    if (apiRes.ok) bgs = await apiRes.json();
+    if (!bgs || bgs.length === 0) {
+      const jsonRes = await fetch(`${window.BASE_STATIC_URL}data/backgrounds.json?t=${Date.now()}`);
+      if (jsonRes.ok) bgs = await jsonRes.json();
+    }
+
+    if (Array.isArray(bgs) && bgs.length > 0) {
+      imageGrid.innerHTML = '';
+      bgs.forEach(bgFile => {
+        const bgUrl = `${window.BASE_STATIC_URL}images/stickers/backgrounds/${encodeURIComponent(bgFile.trim())}`;
+        const card = document.createElement('div');
+        card.className = 'sticker-grid-item';
+
+        const img = document.createElement('img');
+        img.src = bgUrl;
+        img.onerror = () => card.remove();
+
+        card.appendChild(img);
+        card.onclick = () => {
+          applyCanvasBackground(bgUrl);
+          closeDrawer();
+        };
+        imageGrid.appendChild(card);
+      });
+    } else {
+      imageGrid.innerHTML = '<p style="color: #787774; font-size: 0.8rem; padding: 12px;">Place images into <code>static/images/stickers/backgrounds/</code></p>';
+    }
+  } catch (e) {
+    imageGrid.innerHTML = '<p style="color: #787774; font-size: 0.8rem; padding: 12px;">No custom background images found.</p>';
+  }
+}
+
+function addMediaToCanvas(type, srcUrl, width = 100, height = 100) {
+  const el = createBaseItemElement(type, 80, 80, width, height, 0, ++window.state.highestZIndex);
+  const img = document.createElement('img');
+  img.src = srcUrl;
+  el.appendChild(img);
+  selectItem(el);
+}
+
+function handlePhotoUpload(input) {
+  if (!input.files || !input.files[0]) return;
+  const formData = new FormData();
+  formData.append('image', input.files[0]);
+
+  fetch('/scrapbook/upload_image', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.success) {
+      addMediaToCanvas('photo', res.url, 160, 160);
+    } else {
+      alert('Failed to upload photo: ' + (res.message || 'Unknown error'));
+    }
+    input.value = '';
+  })
+  .catch(err => {
+    console.error('[MemoryVerse] Photo Upload Error:', err);
+    input.value = '';
+  });
+}
+
+// ----------------- SAVE PERSISTENCE -----------------
+
+function saveScrapbook() {
+  const saveBtn = document.getElementById('saveBtn');
+  if (saveBtn) saveBtn.innerText = 'Saving... ✨';
+
+  const items = [];
+  const itemEls = window.state.canvas.querySelectorAll('.canvas-item');
+
+  itemEls.forEach(el => {
+    const type = el.dataset.type;
+    let content = '';
+    let extraData = {};
+
+    if (['sticker', 'photo', 'frame', 'paper', 'tape'].includes(type)) {
+      const img = el.querySelector('img');
+      content = img ? img.src : '';
+    } else if (type === 'text') {
+      const txt = el.querySelector('.canvas-text');
+      content = txt ? txt.innerText : '';
+      if (txt) {
+        extraData = {
+          fontFamily: txt.style.fontFamily || "'Plus Jakarta Sans', sans-serif",
+          color: txt.style.color || '#37352F',
+          fontWeight: txt.style.fontWeight || 'normal',
+          fontStyle: txt.style.fontStyle || 'normal',
+          textDecoration: txt.style.textDecoration || 'none',
+          fontSize: txt.style.fontSize || '22px'
+        };
+      }
+    }
+
+    items.push({
+      type: type,
+      content: content,
+      x: parseFloat(el.style.left) || 0,
+      y: parseFloat(el.style.top) || 0,
+      width: parseFloat(el.style.width) || 100,
+      height: parseFloat(el.style.height) || 100,
+      rotation: parseFloat(el.dataset.rotation) || 0,
+      z_index: parseInt(el.style.zIndex, 10) || 1,
+      extra_data: extraData
+    });
+  });
+
+  const currentBg = window.state.canvas.style.backgroundImage && window.state.canvas.style.backgroundImage !== 'none'
+    ? window.state.canvas.style.backgroundImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '')
+    : (window.state.canvas.style.backgroundColor || '#FFF8CF');
+
+  const payload = {
+    title: document.getElementById('scrapbookTitle').value,
+    background: currentBg,
+    items: items
+  };
+
+  fetch(`/scrapbook/${window.SCRAPBOOK_ID}/save`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.success) {
+      if (saveBtn) saveBtn.innerText = 'Saved! 💖';
+      setTimeout(() => { if (saveBtn) saveBtn.innerText = 'Save 💚'; }, 2000);
+    } else {
+      alert('Failed to save scrapbook.');
+      if (saveBtn) saveBtn.innerText = 'Save 💚';
+    }
+  })
+  .catch(err => {
+    console.error('[MemoryVerse] Save Error:', err);
+    if (saveBtn) saveBtn.innerText = 'Save 💚';
+  });
+}

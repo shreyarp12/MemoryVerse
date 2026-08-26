@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 550px; margin: 0 auto;">
+  <h2 style="font-size: 1.5rem; font-weight: 800; color: #D63384; margin-bottom: 16px;">Seal a Time Capsule ⏳</h2>
+
+  <form method="POST" enctype="multipart/form-data">
+    <div style="margin-bottom: 14px;">
+      <label style="display: block; font-weight: 700; margin-bottom: 4px;">Capsule Title</label>
+      <input type="text" name="title" required placeholder="Dear Future Me 💌" style="width: 100%; padding: 10px; border-radius: var(--radius-md); border: 1.5px solid #EEE6FF;">
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="display: block; font-weight: 700; margin-bottom: 4px;">Future Open Date</label>
+      <input type="date" name="open_date" required style="width: 100%; padding: 10px; border-radius: var(--radius-md); border: 1.5px solid #EEE6FF;">
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="display: block; font-weight: 700; margin-bottom: 4px;">Secret Message</label>
+      <textarea name="message" rows="6" required placeholder="Where do you hope to be? What are you proud of today?" style="width: 100%; padding: 10px; border-radius: var(--radius-md); border: 1.5px solid #EEE6FF; font-family: inherit;"></textarea>
+    </div>
+
+    <div style="margin-bottom: 18px;">
+      <label style="display: block; font-weight: 700; margin-bottom: 4px;">Attach Photo (Optional)</label>
+      <input type="file" name="photo" accept="image/*">
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="width: 100%;">Lock Capsule into Future ⏳✨</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/timecapsule.js') }}"></script>
+{% endblock %}

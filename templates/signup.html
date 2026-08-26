@@ -1,71 +1,55 @@
 {% extends "base.html" %}
 
-{% block css %}
+{% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
 {% endblock %}
 
 {% block content %}
+<div class="auth-card">
+  <h2 style="font-size: 1.8rem; font-weight: 800; color: #D63384; margin-bottom: 6px;">Join MemoryVerse 🌸</h2>
+  <p style="color: var(--text-muted); margin-bottom: 20px;">Start saving your precious moments today ✨</p>
 
-<div class="signup-container">
+  <form method="POST" action="{{ url_for('signup') }}">
+    <div class="form-group">
+      <label class="form-label">Your Name</label>
+      <input type="text" name="full_name" class="form-input" placeholder="e.g. Shreya Sharma" required>
+    </div>
 
-    <h1>Create Account 🌸</h1>
-    <p>Start your MemoryVerse Journey</p>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" name="email" class="form-input" placeholder="shreya@example.com" required>
+    </div>
 
-    <form action="/signup" method="POST">
+    <div class="form-group">
+      <label class="form-label">Choose Avatar</label>
+      <div class="avatar-select-grid">
+        <span class="avatar-opt selected" onclick="selectAvatar(this, 'bunny.png')">🐰</span>
+        <span class="avatar-opt" onclick="selectAvatar(this, 'cat.png')">🐱</span>
+        <span class="avatar-opt" onclick="selectAvatar(this, 'bear.png')">🐻</span>
+        <span class="avatar-opt" onclick="selectAvatar(this, 'panda.png')">🐼</span>
+      </div>
+      <input type="hidden" name="avatar" id="avatarInput" value="bunny.png">
+    </div>
 
-        <input type="text" name="fullname" placeholder="Full Name" required>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" name="password" class="form-input" placeholder="••••••••" required>
+    </div>
 
-        <input type="email" name="email" placeholder="Email Address" required>
+    <div class="form-group">
+      <label class="form-label">Confirm Password</label>
+      <input type="password" name="confirm_password" class="form-input" placeholder="••••••••" required>
+    </div>
 
-        <input type="password" id="password" name="password" placeholder="Password" required>
+    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Sign Up ✨</button>
+  </form>
 
-        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
-
-        <button type="button" class="show-password" onclick="togglePassword()">
-            👁 Show Password
-        </button>
-
-        <h3 class="avatar-title">Choose Your Avatar</h3>
-
-        <div class="avatar-slider">
-
-            <button type="button" class="arrow-btn" onclick="scrollLeftAvatar()">◀</button>
-
-            <div class="avatar-container" id="avatarContainer">
-
-                <img src="{{ url_for('static', filename='images/avatars/avatar1.png') }}" class="avatar">
-
-                <img src="{{ url_for('static', filename='images/avatars/avatar2.png') }}" class="avatar">
-
-                <img src="{{ url_for('static', filename='images/avatars/avatar3.png') }}" class="avatar">
-
-                <img src="{{ url_for('static', filename='images/avatars/avatar4.png') }}" class="avatar">
-
-                <img src="{{ url_for('static', filename='images/avatars/avatar5.png') }}" class="avatar">
-
-                <img src="{{ url_for('static', filename='images/avatars/avatar6.png') }}" class="avatar">
-
-            </div>
-
-            <button type="button" class="arrow-btn" onclick="scrollRightAvatar()">▶</button>
-
-        </div>
-
-        <button type="submit" class="signup-btn">
-            Create Account
-        </button>
-
-    </form>
-
-    <p class="login-link">
-        Already have an account?
-        <a href="/login">Login</a>
-    </p>
-
+  <p style="margin-top: 20px; font-size: 0.9rem;">
+    Already have an account? <a href="{{ url_for('login') }}" style="color: #D63384; font-weight: 700;">Sign in</a> 🌸
+  </p>
 </div>
-
 {% endblock %}
 
-{% block js %}
-<script src="{{ url_for('static', filename='js/signup.js') }}"></script>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
 {% endblock %}

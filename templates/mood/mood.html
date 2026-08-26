@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mood.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 550px; margin: 0 auto; text-align: center;">
+  <h1 style="font-size: 1.6rem; font-weight: 800; color: #D63384; margin-bottom: 6px;">How are you feeling today? 🌸</h1>
+  <p style="color: var(--text-muted); margin-bottom: 24px;">Check in with your feelings ✨</p>
+
+  <form method="POST">
+    <div class="mood-grid">
+      {% set moods = [
+        ('😊', 'Happy'), ('🥰', 'Loved'), ('😍', 'Excited'),
+        ('😐', 'Okay'), ('😔', 'Low'), ('😭', 'Sad'),
+        ('😴', 'Tired'), ('😰', 'Stressed'), ('😡', 'Angry')
+      ] %}
+      {% for emoji, name in moods %}
+        <label style="cursor: pointer;">
+          <input type="radio" name="mood" value="{{ emoji }}" {% if loop.first %}checked{% endif %} style="display: none;" onchange="updateMoodSelection(this)">
+          <div class="mood-box card">
+            <div style="font-size: 2rem;">{{ emoji }}</div>
+            <div style="font-size: 0.8rem; font-weight: 700; margin-top: 4px;">{{ name }}</div>
+          </div>
+        </label>
+      {% endfor %}
+    </div>
+
+    <div style="margin-bottom: 20px; text-align: left;">
+      <label style="display: block; font-weight: 700; margin-bottom: 6px; font-size: 0.9rem;">Add a note about today (Optional)</label>
+      <input type="text" name="note" placeholder="What made you feel this way?" class="card" style="width: 100%; border: 1.5px solid #EEE6FF; padding: 10px 14px; outline: none;">
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="width: 100%;">Log Mood 💖</button>
+  </form>
+
+  <div style="margin-top: 20px;">
+    <a href="{{ url_for('mood_history') }}" style="color: #D63384; font-weight: 700; font-size: 0.9rem;">View Mood Analytics & History 📊</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/mood.js') }}"></script>
+<script>
+  document.querySelector('input[name="mood"]:checked').dispatchEvent(new Event('change'));
+</script>
+{% endblock %}

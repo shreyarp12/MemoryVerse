@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 650px; margin: 0 auto; position: relative;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+    <a href="{{ url_for('journal_list') }}" style="font-weight: 700; color: #D63384;">← Back</a>
+    <div style="display: flex; gap: 8px;">
+      <a href="{{ url_for('edit_journal', journal_id=journal.id) }}" class="btn btn-pink" style="padding: 4px 10px; font-size: 0.8rem;">Edit ✏️</a>
+      <form method="POST" action="{{ url_for('delete_journal_route', journal_id=journal.id) }}" onsubmit="return confirm('Delete this memory? 🗑️')">
+        <button type="submit" class="btn" style="background: #FFE4E4; color: #D63384; padding: 4px 10px; font-size: 0.8rem;">Delete</button>
+      </form>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+    <span style="font-size: 2rem;">{{ journal.mood }}</span>
+    <div>
+      <h1 style="font-size: 1.4rem; font-weight: 800;">{{ journal.title }}</h1>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">{{ journal.created_at }}</p>
+    </div>
+  </div>
+
+  {% if journal.photo %}
+    <img src="{{ url_for('static', filename='uploads/journals/' + journal.photo) }}" style="width: 100%; border-radius: var(--radius-md); margin-bottom: 16px; max-height: 350px; object-fit: cover;">
+  {% endif %}
+
+  <div style="white-space: pre-line; line-height: 1.7; font-size: 0.95rem; margin-top: 12px; color: var(--text-primary);">
+    {{ journal.content }}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 550px; margin: 0 auto; text-align: center;">
+  <div style="font-size: 3.5rem; margin-bottom: 10px;">🐰</div>
+  <h1 style="font-size: 1.6rem; font-weight: 800; color: #D63384;">{{ user.full_name }}</h1>
+  <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px;">{{ user.email }}</p>
+
+  <div class="profile-stats-grid">
+    <div class="profile-stat-box" style="background: var(--pink-pastel);">
+      <div style="font-weight: 800; font-size: 1.2rem; color: #D63384;">{{ journals_count }}</div>
+      <div style="font-size: 0.75rem; font-weight: 600;">Journals</div>
+    </div>
+    <div class="profile-stat-box" style="background: var(--lavender-pastel);">
+      <div style="font-weight: 800; font-size: 1.2rem; color: #6C5CE7;">{{ scrapbooks_count }}</div>
+      <div style="font-size: 0.75rem; font-weight: 600;">Scrapbooks</div>
+    </div>
+    <div class="profile-stat-box" style="background: var(--yellow-pastel);">
+      <div style="font-weight: 800; font-size: 1.2rem; color: #E17055;">🔥 {{ streak }}</div>
+      <div style="font-size: 0.75rem; font-weight: 600;">Streak</div>
+    </div>
+  </div>
+
+  <form method="POST" action="{{ url_for('update_profile') }}" style="text-align: left; margin-bottom: 20px;">
+    <div style="margin-bottom: 14px;">
+      <label style="display: block; font-weight: 700; font-size: 0.85rem; margin-bottom: 4px;">Update Name</label>
+      <input type="text" name="full_name" value="{{ user.full_name }}" required style="width: 100%; padding: 10px; border-radius: var(--radius-md); border: 1.5px solid #EEE6FF;">
+    </div>
+    <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes 🌸</button>
+  </form>
+
+  <div style="display: flex; gap: 10px; justify-content: center; border-top: 1px solid #EEE; padding-top: 16px;">
+    <a href="{{ url_for('settings') }}" class="btn btn-pink">Settings ⚙️</a>
+    <a href="{{ url_for('logout') }}" class="btn" style="background: #FFE4E4; color: #D63384;">Sign Out 🎀</a>
+  </div>
+</div>
+{% endblock %}

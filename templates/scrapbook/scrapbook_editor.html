@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Scrapbook Editor 🎨 | {{ scrapbook.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/scrapbook_editor.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Dancing+Script:wght@700&family=Gaegu:wght@700&family=Itim&family=Patrick+Hand&family=Plus+Jakarta+Sans:wght@500;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body class="editor-body">
+
+  <!-- Header -->
+  <header class="editor-header">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="{{ url_for('scrapbook_list') }}" class="back-link">←</a>
+      <input type="text" id="scrapbookTitle" value="{{ scrapbook.title }}" class="title-input">
+    </div>
+    <button id="saveBtn" class="btn btn-primary" type="button">Save 💚</button>
+  </header>
+
+  <!-- Toolbar -->
+  <nav class="editor-toolbar">
+    <button type="button" class="tool-btn" id="btnBg">🖼️ Background</button>
+    <button type="button" class="tool-btn" id="btnPhoto">📷 Photos</button>
+    <button type="button" class="tool-btn" id="btnStickers">🌸 Stickers</button>
+    <button type="button" class="tool-btn" id="btnFrames">🖼️ Frames</button>
+    <button type="button" class="tool-btn" id="btnPapers">📜 Paper</button>
+    <button type="button" class="tool-btn" id="btnTape">🎀 Tape</button>
+    <button type="button" class="tool-btn" id="btnText">✏️ Text</button>
+    <input type="file" id="photoInput" accept="image/*" style="display: none;">
+  </nav>
+
+  <!-- Floating Text Styling Bar -->
+  <div id="textFormatBar" class="text-format-bar">
+    <select id="fontFamilySelect" class="format-select">
+      <option value="'Plus Jakarta Sans', sans-serif">Modern (Default)</option>
+      <option value="'Patrick Hand', cursive">Patrick Hand ✍️</option>
+      <option value="'Gaegu', cursive">Gaegu (Cute)</option>
+      <option value="'Caveat', cursive">Caveat (Handwritten)</option>
+      <option value="'Dancing Script', cursive">Dancing Script (Fancy)</option>
+      <option value="'Itim', cursive">Itim (Playful)</option>
+      <option value="'Quicksand', sans-serif">Quicksand (Clean)</option>
+    </select>
+
+    <!-- Font Size Input -->
+    <div class="font-size-control">
+      <button type="button" id="btnDecreaseSize" class="format-btn">－</button>
+      <input type="number" id="fontSizeInput" min="10" max="150" value="22" class="size-input" title="Font Size (px)">
+      <button type="button" id="btnIncreaseSize" class="format-btn">＋</button>
+    </div>
+
+    <!-- Color Palette -->
+    <div class="color-palette">
+      <span class="color-dot selected" style="background: #37352F;" data-color="#37352F"></span>
+      <span class="color-dot" style="background: #D63384;" data-color="#D63384"></span>
+      <span class="color-dot" style="background: #76AE5E;" data-color="#76AE5E"></span>
+      <span class="color-dot" style="background: #3B82F6;" data-color="#3B82F6"></span>
+      <span class="color-dot" style="background: #8B5CF6;" data-color="#8B5CF6"></span>
+      <span class="color-dot" style="background: #F59E0B;" data-color="#F59E0B"></span>
+      <span class="color-dot" style="background: #EF4444;" data-color="#EF4444"></span>
+      <span class="color-dot" style="background: #FFFFFF; border: 1px solid #CCC;" data-color="#FFFFFF"></span>
+    </div>
+
+    <!-- Typography Styles -->
+    <button type="button" id="btnBold" class="format-btn" title="Bold"><b>B</b></button>
+    <button type="button" id="btnItalic" class="format-btn" title="Italic"><i>I</i></button>
+    <button type="button" id="btnUnderline" class="format-btn" title="Underline"><u>U</u></button>
+  </div>
+
+  <!-- Viewport & Auto-scaler -->
+  <main class="canvas-viewport" id="viewport">
+    <div id="canvasScaler" class="canvas-scaler">
+      <div id="scrapbookCanvas" 
+           class="scrapbook-canvas" 
+           data-id="{{ scrapbook.id }}" 
+           data-static="{{ url_for('static', filename='') }}" 
+           data-bg="{{ scrapbook.background }}">
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Drawer Panel -->
+  <aside id="editorDrawer" class="editor-drawer">
+    <div class="drawer-header">
+      <h3 id="drawerTitle" class="drawer-title">Add Elements ✨</h3>
+      <button type="button" class="close-btn" id="btnCloseDrawer">✕</button>
+    </div>
+    <div class="drawer-content" id="drawerContent"></div>
+  </aside>
+
+  <!-- Safe pre-serialized item data -->
+  <script id="initialItemsData" type="application/json">
+    {{ items_json | safe }}
+  </script>
+
+  <script src="{{ url_for('static', filename='js/scrapbook_editor.js') }}"></script>
+</body>
+</html>

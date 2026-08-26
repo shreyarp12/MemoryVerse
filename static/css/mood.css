@@ -1,0 +1,15 @@
+.mood-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.mood-box {
+  padding: 14px 8px;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  text-align: center;
+  transition: all 0.2s;
+  background: #FFFFFF;
+}

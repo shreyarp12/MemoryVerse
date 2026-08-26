@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/journal.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="journal-header">
+  <h1 style="font-size: 1.6rem; font-weight: 800; color: #D63384;">My Journals 📔</h1>
+  <a href="{{ url_for('create_journal_route') }}" class="btn btn-primary">+ Write Memory 🌸</a>
+</div>
+
+<!-- Search Bar -->
+<form method="GET" action="{{ url_for('journal_list') }}" style="margin-bottom: 24px;">
+  <input type="text" name="search" value="{{ search_query }}" placeholder="🔍 Search your diary entries..." class="search-input">
+</form>
+
+<div class="journal-grid">
+  {% if journals %}
+    {% for j in journals %}
+      <div class="card" style="position: relative; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 1.5rem;">{{ j.mood }}</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">{{ j.created_at[:10] }}</span>
+          </div>
+          <h3 style="font-weight: 700; margin-bottom: 6px;">{{ j.title }}</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 12px;">
+            {% if j.locked %}
+              🔒 <em>This memory is locked.</em>
+            {% else %}
+              {{ j.content[:90] }}{% if j.content|length > 90 %}...{% endif %}
+            {% endif %}
+          </p>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #FAF4EB; padding-top: 10px;">
+          <span>{% if j.favorite %}⭐{% endif %}</span>
+          <a href="{{ url_for('view_journal', journal_id=j.id) }}" class="btn btn-pink" style="padding: 4px 10px; font-size: 0.8rem;">Read 🌸</a>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
+      <p style="font-size: 1.8rem;">🌸</p>
+      <p>No journal entries found. Let's write one!</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

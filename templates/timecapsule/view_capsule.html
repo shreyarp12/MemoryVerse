@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto; text-align: center;">
+  <a href="{{ url_for('capsule_list') }}" style="display: block; text-align: left; font-weight: 700; color: #D63384; margin-bottom: 16px;">← Back</a>
+
+  {% if capsule.is_unlocked %}
+    <div style="font-size: 3rem; margin-bottom: 10px;">🎉 💌 🌸</div>
+    <h1 style="font-size: 1.5rem; font-weight: 800; color: #D63384; margin-bottom: 6px;">{{ capsule.title }}</h1>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Created on {{ capsule.created_at[:10] }} | Opened on {{ capsule.open_date }}</p>
+
+    {% if capsule.photo %}
+      <img src="{{ url_for('static', filename='uploads/journals/' + capsule.photo) }}" style="width: 100%; border-radius: var(--radius-md); margin-bottom: 16px;">
+    {% endif %}
+
+    <div style="text-align: left; background: var(--pink-pastel); padding: 20px; border-radius: var(--radius-md); line-height: 1.6; white-space: pre-line;">
+      {{ capsule.message }}
+    </div>
+  {% else %}
+    <div style="font-size: 3.5rem; margin: 20px 0;">🔒 ⏳</div>
+    <h2 style="font-weight: 800; color: #37352F;">This Time Capsule is Sealed</h2>
+    <p style="color: var(--text-muted); margin: 10px 0 20px;">It will automatically unlock on <strong>{{ capsule.open_date }}</strong>.</p>
+    <a href="{{ url_for('capsule_list') }}" class="btn btn-pink">Return to Capsules</a>
+  {% endif %}
+</div>
+{% endblock %}

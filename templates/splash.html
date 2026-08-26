@@ -1,33 +1,22 @@
 {% extends "base.html" %}
 
-{% block css %}
+{% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/splash.css') }}">
 {% endblock %}
 
 {% block content %}
-
-<div class="splash-container">
-
-    <div class="overlay"></div>
-
-    <div class="content">
-
-        <img src="{{ url_for('static', filename='images/logo/logo.png') }}"
-             class="logo"
-             alt="MemoryVerse Logo">
-
-        <h1>MemoryVerse</h1>
-
-        <p>Capture Today, Treasure Tomorrow</p>
-
-        <div class="loader"></div>
-
-    </div>
-
+<div class="splash-wrapper">
+  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="MemoryVerse" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 12px;">
+  <h1 class="splash-title">MemoryVerse</h1>
+  <p class="splash-tagline">"Capture Today, Treasure Tomorrow" 🎀</p>
+  <div class="loading-bar"></div>
 </div>
-
 {% endblock %}
 
-{% block js %}
-<script src="{{ url_for('static', filename='js/splash.js') }}"></script>
+{% block extra_js %}
+<script>
+  setTimeout(() => {
+    window.location.href = "{{ url_for('login') }}";
+  }, 2200);
+</script>
 {% endblock %}

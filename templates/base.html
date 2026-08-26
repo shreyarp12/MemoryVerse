@@ -1,32 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>MemoryVerse</title>
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-
-{% block css %}
-
-{% endblock %}
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MemoryVerse 🌸 Capture Today, Treasure Tomorrow{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  {% block extra_css %}{% endblock %}
 </head>
-
 <body>
 
-{% block content %}
+  <!-- Flash Notifications -->
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">
+            <span>🌸</span>
+            <span>{{ message }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
 
-{% endblock %}
+  {% if current_user %}
+  <!-- Top Navigation (Desktop) -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="{{ url_for('home') }}" class="logo">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="MemoryVerse Logo" class="app-logo-img">
+        <span>MemoryVerse</span> 🌸
+      </a>
+      <nav class="nav-links">
+        <a href="{{ url_for('home') }}" class="nav-link">🏠 Home</a>
+        <a href="{{ url_for('journal_list') }}" class="nav-link">📔 Journal</a>
+        <a href="{{ url_for('scrapbook_list') }}" class="nav-link">🎨 Scrapbook</a>
+        <a href="{{ url_for('capsule_list') }}" class="nav-link">⏳ Capsule</a>
+        <a href="{{ url_for('mood_tracker') }}" class="nav-link">😊 Mood</a>
+        <a href="{{ url_for('profile') }}" class="nav-link">👤 Profile</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-pink" style="padding: 6px 14px;">Logout 🎀</a>
+      </nav>
+    </div>
+  </header>
+  {% endif %}
 
-{% block js %}
+  <!-- Main Content Body -->
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
 
-{% endblock %}
+  {% if current_user %}
+  <!-- Bottom Navigation (Mobile) -->
+  <nav class="bottom-nav">
+    <a href="{{ url_for('home') }}" class="bottom-nav-item">
+      <span class="icon">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="{{ url_for('journal_list') }}" class="bottom-nav-item">
+      <span class="icon">📔</span>
+      <span>Journal</span>
+    </a>
+    <a href="{{ url_for('create_journal_route') }}" class="bottom-nav-item">
+      <span class="icon">➕</span>
+      <span>Create</span>
+    </a>
+    <a href="{{ url_for('scrapbook_list') }}" class="bottom-nav-item">
+      <span class="icon">🎨</span>
+      <span>Scrapbook</span>
+    </a>
+    <a href="{{ url_for('profile') }}" class="bottom-nav-item">
+      <span class="icon">👤</span>
+      <span>Profile</span>
+    </a>
+  </nav>
+  {% endif %}
 
+  <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+  {% block extra_js %}{% endblock %}
 </body>
-
 </html>
