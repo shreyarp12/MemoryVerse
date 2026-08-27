@@ -7,44 +7,49 @@
     <h1 style="font-size: 1.5rem; font-weight: 800;">Preferences & Settings ⚙️</h1>
   </div>
 
-  <div style="margin-bottom: 24px;">
-    <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 10px; color: #D63384;">Reminders 🔔</h3>
-    <label style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-      <span>Daily Journal Reminder</span>
-      <input type="checkbox" checked>
-    </label>
-    <label style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-      <span>Mood Tracker Prompt</span>
-      <input type="checkbox" checked>
-    </label>
-    <label style="display: flex; align-items: center; justify-content: space-between;">
-      <span>Time Capsule Notification</span>
-      <input type="checkbox" checked>
-    </label>
-  </div>
+  <!-- We must use a form with method="POST" to send data to the backend -->
+  <form method="POST" action="{{ url_for('settings') }}">
+    
+    <div style="margin-bottom: 24px;">
+      <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 10px; color: #D63384;">Reminders 🔔</h3>
+      <label style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <span>Daily Journal Reminder</span>
+        <input type="checkbox" checked>
+      </label>
+      <label style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <span>Mood Tracker Prompt</span>
+        <input type="checkbox" checked>
+      </label>
+      <label style="display: flex; align-items: center; justify-content: space-between;">
+        <span>Time Capsule Notification</span>
+        <input type="checkbox" checked>
+      </label>
+    </div>
 
-  <div style="border-top: 1px solid #EEE; padding-top: 16px; margin-bottom: 24px;">
-    <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 10px; color: #D63384;">Data Privacy 🔒</h3>
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Your memories are stored locally in your isolated SQLite database.</p>
-  </div>
+    <div style="border-top: 1px solid #EEE; padding-top: 16px; margin-bottom: 24px;">
+      <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 10px; color: #D63384;">Data Privacy 🔒</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Your memories are stored locally in your isolated SQLite database.</p>
+    </div>
 
-  <a href="{{ url_for('profile') }}" class="btn btn-primary" style="width: 100%;">Save Preferences ✨</a>
-</div>
-<!-- Inside your Settings form -->
-<div style="margin-top: 20px;">
-  <h3 style="color: #d63384; font-size: 1rem; margin-bottom: 8px;">Security & Lock PIN 🔒</h3>
-  <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">
-    Set a 4-digit PIN to access your locked memories.
-  </p>
-  
-  <input 
-    type="password" 
-    name="security_pin" 
-    inputmode="numeric" 
-    pattern="[0-9]{4}" 
-    maxlength="4" 
-    placeholder="Enter 4-digit PIN"
-    style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; letter-spacing: 4px; text-align: center;"
-  >
+    <!-- The PIN input must be inside the form -->
+    <div style="border-top: 1px solid #EEE; padding-top: 16px; margin-bottom: 24px;">
+      <h3 style="color: #d63384; font-size: 1rem; margin-bottom: 8px;">Security & Lock PIN 🔒</h3>
+      <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">
+        Set a 4-digit PIN to access your locked memories.
+      </p>
+      <input 
+        type="password" 
+        name="security_pin" 
+        inputmode="numeric" 
+        pattern="[0-9]{4}" 
+        maxlength="4" 
+        placeholder="Enter 4-digit PIN"
+        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; letter-spacing: 4px; text-align: center;"
+      >
+    </div>
+
+    <!-- This MUST be a button with type="submit", not an <a> tag -->
+    <button type="submit" class="btn btn-primary" style="width: 100%; cursor: pointer;">Save Preferences ✨</button>
+  </form>
 </div>
 {% endblock %}
