@@ -46,6 +46,7 @@ def update_user_profile(user_id, full_name, avatar=None):
         conn.execute('UPDATE users SET full_name = ? WHERE id = ?', (full_name.strip(), user_id))
     conn.commit()
     conn.close()
+
 def reset_user_password(email, new_password):
     conn = get_db_connection()
     user = conn.execute('SELECT id FROM users WHERE email = ?', (email.strip().lower(),)).fetchone()
@@ -58,3 +59,22 @@ def reset_user_password(email, new_password):
     conn.commit()
     conn.close()
     return True
+
+# ----------------- PIN SECURITY FUNCTIONS -----------------
+
+def update_user_pin(user_id, pin):
+    conn = get_db_connection()
+    pin_hash = generate_password_hash(pin)
+    conn.execute('UPDATE users SET pin_hash = ? WHERE id = ?', (pin_hash, user_id))
+    conn.commit()
+    conn.close()
+
+def verify_user_pin(user_id, pin):
+    conn = get_db_connection()
+    user = conn.execute('SELECT pin_hash FROM users WHERE id = ?', (user_id,)).fetchone()
+    conn.close()
+    
+    # Check if user exists, has a pin set, and the pin matches
+    if user and user['pin_hash']:
+        return check_password_hash(user['pin_hash'], pin)
+    return False

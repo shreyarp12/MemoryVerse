@@ -35,7 +35,7 @@
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #FAF4EB; padding-top: 10px;">
           <span>{% if j.favorite %}⭐{% endif %}</span>
-          <a href="{{ url_for('view_journal', journal_id=j.id) }}" class="btn btn-pink" style="padding: 4px 10px; font-size: 0.8rem;">Read 🌸</a>
+          <button onclick="handleMemoryClick(`{{ url_for('view_journal', journal_id=j.id) }}`, `{{ j.locked }}`)" class="btn btn-pink" style="padding: 4px 10px; font-size: 0.8rem; border: none; cursor: pointer;">Read 🌸</button>
         </div>
       </div>
     {% endfor %}
@@ -46,4 +46,55 @@
     </div>
   {% endif %}
 </div>
+
+<!-- Lock Modal -->
+<div id="pinModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+  <div style="background: white; padding: 25px; border-radius: 12px; width: 300px; text-align: center;">
+    <h3>🔒 Locked Memory</h3>
+    <p style="font-size: 0.85rem; color: #666;">Enter your 4-digit PIN to view:</p>
+    <input type="password" id="modalPinInput" maxlength="4" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem; width: 80%; padding: 8px; margin: 12px 0;">
+    <p id="pinError" style="color: red; font-size: 0.8rem; display: none;"></p>
+    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+      <button onclick="closePinModal()" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; background: #eee; cursor: pointer;">Cancel</button>
+      <button onclick="submitPin()" style="padding: 6px 12px; border-radius: 6px; border: none; background: #d63384; color: white; cursor: pointer;">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let targetUrl = '';
+
+function handleMemoryClick(url, isLocked) {
+  if (isLocked === '1' || isLocked === 'True' || isLocked === 'true') {
+    targetUrl = url;
+    document.getElementById('modalPinInput').value = '';
+    document.getElementById('pinError').style.display = 'none';
+    document.getElementById('pinModal').style.display = 'flex';
+  } else {
+    window.location.href = url;
+  }
+}
+
+function closePinModal() {
+  document.getElementById('pinModal').style.display = 'none';
+}
+
+async function submitPin() {
+  const pin = document.getElementById('modalPinInput').value;
+  const res = await fetch('/api/verify-pin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pin: pin })
+  });
+
+  const data = await res.json();
+  if (data.success) {
+    window.location.href = targetUrl;
+  } else {
+    const err = document.getElementById('pinError');
+    err.innerText = data.message || 'Incorrect PIN';
+    err.style.display = 'block';
+  }
+}
+</script>
 {% endblock %}

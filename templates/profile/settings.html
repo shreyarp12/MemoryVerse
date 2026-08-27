@@ -30,4 +30,21 @@
 
   <a href="{{ url_for('profile') }}" class="btn btn-primary" style="width: 100%;">Save Preferences ✨</a>
 </div>
+<!-- Inside your Settings form -->
+<div style="margin-top: 20px;">
+  <h3 style="color: #d63384; font-size: 1rem; margin-bottom: 8px;">Security & Lock PIN 🔒</h3>
+  <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">
+    Set a 4-digit PIN to access your locked memories.
+  </p>
+  
+  <input 
+    type="password" 
+    name="security_pin" 
+    inputmode="numeric" 
+    pattern="[0-9]{4}" 
+    maxlength="4" 
+    placeholder="Enter 4-digit PIN"
+    style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; letter-spacing: 4px; text-align: center;"
+  >
+</div>
 {% endblock %}

@@ -5,7 +5,10 @@ from werkzeug.utils import secure_filename
 from flask import Flask, json, render_template, request, redirect, url_for, session, flash, jsonify
 
 from config import Config
-from database.users import register_user, login_user, get_user_by_id, email_exists, update_user_profile
+from database.users import (
+    register_user, login_user, get_user_by_id, email_exists, 
+    update_user_profile, reset_user_password, update_user_pin, verify_user_pin
+)
 from database.journals import (
     add_journal, get_all_journals, get_journal, update_journal, 
     delete_journal, get_favorites, calculate_streak, get_memory_from_past
@@ -16,7 +19,6 @@ from database.scrapbooks import (
     create_scrapbook, get_scrapbooks, get_scrapbook, 
     save_scrapbook_items, delete_scrapbook
 )
-from database.users import register_user, login_user, get_user_by_id, email_exists, update_user_profile, reset_user_password
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -84,6 +86,7 @@ def signup():
             flash("An error occurred during registration. Please try again.", "error")
 
     return render_template('signup.html')
+
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
     if 'user_id' in session:
@@ -346,6 +349,7 @@ def scrapbook_editor(scrapbook_id):
     items_json = json.dumps(sb.get('items', []))
     
     return render_template('scrapbook/scrapbook_editor.html', scrapbook=sb, items_json=items_json)
+
 @app.route('/scrapbook/<int:scrapbook_id>/view')
 @login_required
 def view_scrapbook(scrapbook_id):
@@ -444,10 +448,40 @@ def update_profile():
         flash("Profile updated! 🌸", "success")
     return redirect(url_for('profile'))
 
-@app.route('/settings')
+@app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
+    if request.method == 'POST':
+        pin = request.form.get('security_pin')
+        
+        # If user entered a PIN, update it
+        if pin:
+            if len(pin) == 4 and pin.isdigit():
+                update_user_pin(session['user_id'], pin)
+                flash("Settings and PIN updated successfully! ✨", "success")
+            else:
+                flash("PIN must be exactly 4 digits.", "error")
+                return redirect(url_for('settings'))
+
+        # (Save your reminder preferences here as well if you have them)
+        return redirect(url_for('settings'))
+
     return render_template('profile/settings.html')
+
+
+@app.route('/api/verify-pin', methods=['POST'])
+@login_required
+def verify_pin():
+    data = request.get_json() or {}
+    entered_pin = data.get('pin', '')
+    user_id = session['user_id']
+
+    if verify_user_pin(user_id, entered_pin):
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'message': 'Incorrect PIN or no PIN set. Try again.'}), 401
+
+
 @app.route('/api/stickers/<category>')
 @login_required
 def get_sticker_category_assets(category):
